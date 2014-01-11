@@ -1,5 +1,6 @@
 # Hypostasis
 
+[![Gem Version](https://badge.fury.io/rb/hypostasis.png)](http://badge.fury.io/rb/hypostasis)
 [![Build Status](https://travis-ci.org/hypostasis/hypostasis.png)](https://travis-ci.org/hypostasis/hypostasis)
 [![Dependency Status](https://gemnasium.com/hypostasis/hypostasis.png)](https://gemnasium.com/hypostasis/hypostasis)
 
