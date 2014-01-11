@@ -2,6 +2,7 @@
 
 [![Gem Version](https://badge.fury.io/rb/hypostasis.png)](http://badge.fury.io/rb/hypostasis)
 [![Build Status](https://travis-ci.org/hypostasis/hypostasis.png)](https://travis-ci.org/hypostasis/hypostasis)
+[![Code Climate](https://codeclimate.com/repos/52d192fa6956802453000df7/badges/0e37d2069e868f797adc/gpa.png)](https://codeclimate.com/repos/52d192fa6956802453000df7/feed)
 [![Dependency Status](https://gemnasium.com/hypostasis/hypostasis.png)](https://gemnasium.com/hypostasis/hypostasis)
 
 Hypostasis is a layer for FoundationDB that supports multiple data models on
