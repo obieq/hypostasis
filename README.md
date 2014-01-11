@@ -1,5 +1,6 @@
 # Hypostasis
 
+[![Build Status](https://travis-ci.org/hypostasis/hypostasis.png)](https://travis-ci.org/hypostasis/hypostasis)
 [![Dependency Status](https://gemnasium.com/hypostasis/hypostasis.png)](https://gemnasium.com/hypostasis/hypostasis)
 
 Hypostasis is a layer for FoundationDB that supports multiple data models on
