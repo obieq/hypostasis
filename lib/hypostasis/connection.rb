@@ -11,6 +11,10 @@ class Hypostasis::Connection
     @database = FDB.open
   end
 
+  def self.config_path
+    @@config_key
+  end
+
   def get(key)
     database[key.to_s]
   end
