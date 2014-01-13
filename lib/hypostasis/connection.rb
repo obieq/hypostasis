@@ -5,6 +5,8 @@ FDB.api_version 100
 class Hypostasis::Connection
   attr_reader :database
 
+  @@config_key = Hypostasis::KeyPath.new('hypostasis', 'config', 'namespaces')
+
   def initialize
     @database = FDB.open
   end
@@ -22,23 +24,23 @@ class Hypostasis::Connection
   end
 
   def create_namespace(name, options = {data_model: :key_value})
-    config_key = "hypostasis\\config\\namespaces\\#{name.to_s}"
-    raise Hypostasis::Errors::NamespaceAlreadyCreated unless database[config_key].nil?
-    database[config_key] = Marshal.dump(options)
+    path = @@config_key.extend_path(name.to_s).to_s
+    raise Hypostasis::Errors::NamespaceAlreadyCreated unless database[path].nil?
+    database[path] = Marshal.dump(options)
     Hypostasis::Namespace.new(name, options[:data_model])
   end
 
   def open_namespace(name)
-    config_key = "hypostasis\\config\\namespaces\\#{name.to_s}"
-    raise Hypostasis::Errors::NonExistentNamespace if database[config_key].nil?
-    options = Marshal.load(database[config_key])
+    path = @@config_key.extend_path(name.to_s).to_s
+    raise Hypostasis::Errors::NonExistentNamespace if database[path].nil?
+    options = Marshal.load(database[path])
     Hypostasis::Namespace.new(name, options[:data_model])
   end
 
   def destroy_namespace(name)
-    config_key = "hypostasis\\config\\namespaces\\#{name.to_s}"
-    raise Hypostasis::Errors::NonExistentNamespace if database[config_key].nil?
-    database.clear_range_start_with(config_key)
+    path = @@config_key.extend_path(name.to_s).to_s
+    raise Hypostasis::Errors::NonExistentNamespace if database[path].nil?
+    database.clear_range_start_with(path)
     database.clear_range_start_with(name.to_s)
     true
   end
