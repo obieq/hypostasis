@@ -57,6 +57,6 @@ describe Hypostasis::Connection do
     end
 
     it { subject.destroy_namespace('already_created').must_equal true }
-    it { lambda { subject.destroy_namespace('not_created') }.must_raise Hypostasis::Errors::NonExistantNamespace }
+    it { lambda { subject.destroy_namespace('not_created') }.must_raise Hypostasis::Errors::NonExistentNamespace }
   end
 end

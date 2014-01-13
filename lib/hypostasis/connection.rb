@@ -30,14 +30,14 @@ class Hypostasis::Connection
 
   def open_namespace(name)
     config_key = "hypostasis\\config\\namespaces\\#{name.to_s}"
-    raise Hypostasis::Errors::NonExistantNamespace if database[config_key].nil?
+    raise Hypostasis::Errors::NonExistentNamespace if database[config_key].nil?
     options = Marshal.load(database[config_key])
     Hypostasis::Namespace.new(name, options[:data_model])
   end
 
   def destroy_namespace(name)
     config_key = "hypostasis\\config\\namespaces\\#{name.to_s}"
-    raise Hypostasis::Errors::NonExistantNamespace if database[config_key].nil?
+    raise Hypostasis::Errors::NonExistentNamespace if database[config_key].nil?
     database.clear_range_start_with(config_key)
     database.clear_range_start_with(name.to_s)
     true
