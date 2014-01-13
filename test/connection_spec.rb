@@ -3,16 +3,6 @@ require 'minitest_helper'
 describe Hypostasis::Connection do
   let(:subject) { Hypostasis::Connection.new }
 
-  before :each do
-
-    subject.set('unset_key', 'unset_value')
-  end
-
-  after :each do
-
-    subject.unset('unset_key')
-  end
-
   it { subject.must_respond_to :get }
   it { subject.must_respond_to :set }
   it { subject.must_respond_to :unset }
