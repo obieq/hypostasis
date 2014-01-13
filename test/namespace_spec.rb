@@ -8,7 +8,4 @@ describe Hypostasis::Namespace do
 
   it { subject.must_respond_to :data_model }
   it { subject.data_model.must_equal :document }
-
-  it "sets 'hypostasis/config/namespaces/demonstration' key"
-  it "sets 'hypostasis/config/namespaces/demonstration/data_model' key"
 end

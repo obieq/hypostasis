@@ -12,3 +12,15 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'hypostasis'
 
 require 'minitest/autorun'
+
+class Minitest::Spec
+
+  after { database.clear_range_start_with('hypostasis') }
+
+private
+
+  def database
+    @database ||= FDB.open
+  end
+
+end
