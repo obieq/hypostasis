@@ -30,4 +30,6 @@ describe Hypostasis::Tuple do
 
   it { Hypostasis::Tuple.unpack(subject.to_s).is_a?(Hypostasis::Tuple).must_equal true }
   it { Hypostasis::Tuple.unpack(subject.to_s).to_a.must_equal subject.to_a }
+
+  it { subject.to_range.must_equal FDB::Tuple.range(subject.to_a) }
 end

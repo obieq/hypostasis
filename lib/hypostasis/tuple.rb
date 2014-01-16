@@ -40,6 +40,10 @@ class Hypostasis::Tuple
     end
   end
 
+  def to_range
+    FDB::Tuple.range(@tuple)
+  end
+
   def self.unpack(tuple_string)
     Hypostasis::Tuple.new(FDB::Tuple.unpack(tuple_string))
   end
