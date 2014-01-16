@@ -10,7 +10,7 @@ describe Hypostasis::Tuple do
   it { subject.must_respond_to :trim }
 
   it { subject.to_a.must_equal ['tuple', 'example', 123] }
-  it { subject.to_s.must_equal "\x02tuple\x00\x02example\x00\x15{" }
+  it { subject.to_s.must_equal FDB::Tuple.pack(['tuple', 'example', 123]) }
 
   it { subject.prepend('another').is_a?(Hypostasis::Tuple).must_equal true }
   it { subject.prepend('another').to_a.must_equal ['another', 'tuple', 'example', 123] }
@@ -31,5 +31,5 @@ describe Hypostasis::Tuple do
   it { Hypostasis::Tuple.unpack(subject.to_s).is_a?(Hypostasis::Tuple).must_equal true }
   it { Hypostasis::Tuple.unpack(subject.to_s).to_a.must_equal subject.to_a }
 
-  it { subject.to_range.must_equal FDB::Tuple.range(subject.to_a) }
+  it { subject.to_range.must_equal FDB::Tuple.range(['tuple', 'example', 123]) }
 end
