@@ -39,4 +39,8 @@ class Hypostasis::Tuple
       self
     end
   end
+
+  def self.unpack(tuple_string)
+    Hypostasis::Tuple.new(FDB::Tuple.unpack(tuple_string))
+  end
 end

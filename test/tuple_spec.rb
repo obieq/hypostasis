@@ -27,4 +27,7 @@ describe Hypostasis::Tuple do
   it { lambda { subject.trim(-4) }.must_raise Hypostasis::Errors::TupleExhausted }
 
   it { lambda { Hypostasis::Tuple.new }.must_raise Hypostasis::Errors::InvalidTuple }
+
+  it { Hypostasis::Tuple.unpack(subject.to_s).is_a?(Hypostasis::Tuple).must_equal true }
+  it { Hypostasis::Tuple.unpack(subject.to_s).to_a.must_equal subject.to_a }
 end
