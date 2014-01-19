@@ -15,17 +15,6 @@ require 'minitest/autorun'
 
 class Minitest::Spec
 
-  after do
-    database.get_range_start_with("hypostasis\\config\\namespaces") do |kv|
-      namespace = kv.key.gsub("hypostasis\\config\\namespaces\\", '')
-      database.clear_range_start_with(namespace)
-    end
-
-    database.clear_range_start_with('hypostasis')
-  end
-
-private
-
   def database
     @database ||= FDB.open
   end
