@@ -38,6 +38,22 @@ describe Hypostasis::Namespace do
     it { database.get('keyvalue_space\\' + Hypostasis::Tuple.new(['config','data_model']).to_s).must_equal 'key_value' }
     it { subject.must_respond_to :get }
     it { subject.must_respond_to :set }
+
+    describe '#set' do
+      before do
+        subject.set('fixnum', 5)
+      end
+
+      it { database.get('keyvalue_space\\' + Hypostasis::Tuple.new('fixnum'.to_s, Fixnum.to_s).to_s).must_equal '5' }
+    end
+
+    describe '#get' do
+      before do
+        subject.set('fixnum', 5)
+      end
+
+      it { subject.get('fixnum').must_equal 5 }
+    end
   end
 
   describe 'for a Document namespace' do

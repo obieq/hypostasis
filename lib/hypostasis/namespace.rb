@@ -52,5 +52,4 @@ private
         raise Hypostasis::Errors::UnknownNamespaceDataModel, "#{@data_model} unknown"
     end
   end
-
 end
