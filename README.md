@@ -50,6 +50,29 @@ the project matures and the APIs stabilize.
 
 Until then, we suggest reading the code and the tests.
 
+### Key-Value Data Model
+
+    require 'hypostasis'
+
+    ns = Hypostasis::Connection.create_namespace('keystore', {data_model: :key_value})
+    ns.set('keyname', 10)
+
+    ns.get('keyname')     #=> 10
+
+The Key-Value data model provides some simple enhancements on top of
+FoundationDB's core key-value capabilities, including automatic reconstitution
+of basic language types and support for namespacing where keys are stored. The
+basic language types currently suported include the following:
+
+* String
+* Fixnum
+* Bignum
+* Float
+* Date
+* DateTime
+* Time
+* Boolean
+
 ## Contributing
 
 1. Fork it
