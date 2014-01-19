@@ -7,4 +7,5 @@ module Hypostasis::Errors
   class KeyPathExhausted < StandardError; end
   class InvalidTuple < StandardError; end
   class TupleExhausted < StandardError; end
+  class UnknownValueType < StandardError; end
 end
