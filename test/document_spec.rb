@@ -22,4 +22,22 @@ describe Hypostasis::Document do
   it { subject.name.must_equal 'John' }
   it { subject.age.must_equal 21 }
   it { subject.dob.must_equal Date.today.prev_year(21) }
+
+  it { subject.must_respond_to :save }
+
+  describe '#save' do
+    let(:document_tuple) { Hypostasis::Tuple.new(SampleDocument.to_s, @document.id.to_s).to_s }
+
+    def field_path(name, type)
+      'sample_docs\\' + document_tuple + '\\' + Hypostasis::Tuple.new(name.to_s, type.to_s).to_s
+    end
+
+    before do
+      @document = subject.save
+    end
+
+    it { database.get(field_path(:name, String)).must_equal 'John' }
+    it { database.get(field_path(:age, Fixnum)).must_equal '21' }
+    it { database.get(field_path(:dob, Date)).must_equal Date.today.prev_year(21).to_s }
+  end
 end
