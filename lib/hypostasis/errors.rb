@@ -8,4 +8,5 @@ module Hypostasis::Errors
   class InvalidTuple < StandardError; end
   class TupleExhausted < StandardError; end
   class UnknownValueType < StandardError; end
+  class MustDefineFieldType < StandardError; end
 end

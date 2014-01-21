@@ -13,6 +13,8 @@ require 'hypostasis'
 
 require 'minitest/autorun'
 
+require 'support/sample_document'
+
 class Minitest::Spec
 
   def database

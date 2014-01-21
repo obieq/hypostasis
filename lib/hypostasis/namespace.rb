@@ -4,8 +4,14 @@ class Hypostasis::Namespace
   def initialize(name, data_model = :key_value)
     @name = name.to_s
     @data_model = data_model.to_sym
-
     load_data_model
+  end
+
+  def open
+    raise Hypostasis::Errors::NonExistentNamespace if database[name].nil?
+    data_model = database.get(name + '\\' + Hypostasis::Tuple.new('config','data_model').to_s)
+    raise Hypostasis::Errors::NamespaceDataModelMismatch if data_model != @data_model.to_s
+    self
   end
 
   def destroy

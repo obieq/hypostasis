@@ -7,3 +7,5 @@ require 'hypostasis/key_path'
 require 'hypostasis/connection'
 require 'hypostasis/data_models'
 require 'hypostasis/namespace'
+
+require 'hypostasis/document'
