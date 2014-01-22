@@ -49,11 +49,8 @@ module Hypostasis::Document
     end
 
     def field(name, options = {})
-      named = name.to_s
-      raise Hypostasis::Errors::MustDefineFieldType if options[:type].nil?
-      raise Hypostasis::Errors::UnsupportedFieldType unless supported_field_types.include?(options[:type].to_s)
       register_field(name.to_sym)
-      create_accessors(named, options)
+      create_accessors(name.to_s, options)
     end
 
     def fields

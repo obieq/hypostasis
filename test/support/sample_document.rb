@@ -3,7 +3,7 @@ class SampleDocument
 
   use_namespace 'sample_docs'
 
-  field :name, type: String
-  field :age,  type: Fixnum
-  field :dob,  type: Date
+  field :name
+  field :age
+  field :dob
 end
