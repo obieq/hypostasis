@@ -11,8 +11,7 @@ module Hypostasis::Document
     self.class.namespace.open
 
     @fields = {}
-    @field_types = self.class.fields
-    @field_types.each {|name, type| @fields[name] = nil}
+    self.class.fields.each {|name| @fields[name] = nil}
     attributes.each {|hsh| hsh.each {|name, value| @fields[name.to_sym] = value}}
   end
 
@@ -22,7 +21,7 @@ module Hypostasis::Document
       tr.set(self.class.namespace.for_document(self), true.to_s)
 
       @fields.each do |field_name, value|
-        tr.set(self.class.namespace.for_field(self, field_name, self.class.fields[field_name]), value.to_s)
+        tr.set(self.class.namespace.for_field(self, field_name, value.class.to_s), value.to_s)
       end
     end
     self
@@ -49,7 +48,7 @@ module Hypostasis::Document
       named = name.to_s
       raise Hypostasis::Errors::MustDefineFieldType if options[:type].nil?
       raise Hypostasis::Errors::UnsupportedFieldType unless supported_field_types.include?(options[:type].to_s)
-      register_field(name.to_sym, options[:type].to_s)
+      register_field(name.to_sym)
       create_accessors(named, options)
     end
 
@@ -57,9 +56,9 @@ module Hypostasis::Document
       @@fields
     end
 
-    def register_field(name, type)
-      @@fields = {} unless defined?(@@fields)
-      @@fields.merge({name => type})
+    def register_field(name)
+      @@fields = [] unless defined?(@@fields)
+      @@fields << name.to_sym
     end
 
     def create_accessors(name, options)
