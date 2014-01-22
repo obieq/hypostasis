@@ -31,6 +31,10 @@ module Hypostasis::Document
     @id ||= SecureRandom.uuid
   end
 
+  def set_id(id)
+    @id ||= id.to_s
+  end
+
   module ClassMethods
     def use_namespace(namespace)
       @@namespace = Hypostasis::Namespace.new(namespace.to_s, :document)
@@ -69,11 +73,49 @@ module Hypostasis::Document
     end
 
     def find(id)
+      document_keys = []
       namespace.transact do |tr|
         document_keys = tr.get_range_start_with(namespace.for_document(self, id))
       end
+      #raise Hypostasis::Errors::DocumentNotFound if document_keys.empty?
+      attributes = {}
+      id = Hypostasis::Tuple.unpack(document_keys.first.key.split('\\')[1]).to_a[1]
+      document_keys.each do |key|
+        attribute_tuple = key.key.split('\\')[2]
+        next if attribute_tuple.nil?
+        unpacked_key = Hypostasis::Tuple.unpack(attribute_tuple)
+        raw_value = key.value
+        attributes[unpacked_key.to_a[0].to_sym] = reconstitute_value(unpacked_key, raw_value)
+      end
+      document = self.new(attributes)
+      document.set_id(id)
+      document
+    end
 
-      # Actually process the keys
+    def reconstitute_value(tuple, raw_value)
+      data_type = tuple.to_a.last
+      case data_type
+        when 'Fixnum'
+          Integer(raw_value)
+        when 'Bignum'
+          Integer(raw_value)
+        when 'Float'
+          Float(raw_value)
+        when 'String'
+          raw_value
+        when 'Date'
+          Date.parse(raw_value)
+        when 'DateTime'
+          DateTime.parse(raw_value)
+        when 'Time'
+          Time.parse(raw_value)
+        when 'TrueClass'
+          true
+        when 'FalseClass'
+          false
+        else
+          raise Hypostasis::Errors::UnknownValueType
+      end
     end
   end
 end
