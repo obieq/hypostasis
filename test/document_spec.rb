@@ -40,4 +40,11 @@ describe Hypostasis::Document do
     it { database.get(field_path(:age, Fixnum)).must_equal '21' }
     it { database.get(field_path(:dob, Date)).must_equal Date.today.prev_year(21).to_s }
   end
+
+  describe '.find' do
+    let(:document_id) { subject.save.id }
+
+    it { SampleDocument.find(document_id).is_a?(SampleDocument).must_equal true }
+    it { SampleDocument.find(document_id).id.must_equal document_id }
+  end
 end

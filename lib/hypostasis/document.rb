@@ -67,5 +67,13 @@ module Hypostasis::Document
         define_method("#{name}=") {|value| @fields[name.to_sym] = value}
       end
     end
+
+    def find(id)
+      namespace.transact do |tr|
+        document_keys = tr.get_range_start_with(namespace.for_document(self, id))
+      end
+
+      # Actually process the keys
+    end
   end
 end
