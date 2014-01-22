@@ -27,6 +27,12 @@ module Hypostasis::Document
     self
   end
 
+  def destroy
+    self.class.namespace.transact do |tr|
+      tr.clear_range_start_with(self.class.namespace.for_document(self))
+    end
+  end
+
   def generate_id
     @id ||= SecureRandom.uuid
   end
@@ -67,6 +73,10 @@ module Hypostasis::Document
         define_method(name) { @fields[name.to_sym] || nil }
         define_method("#{name}=") {|value| @fields[name.to_sym] = value}
       end
+    end
+
+    def create(*attributes)
+      self.new(*attributes).save
     end
 
     def find(id)

@@ -25,6 +25,24 @@ describe Hypostasis::Document do
 
   it { subject.must_respond_to :save }
 
+  describe '#create' do
+    let(:subject) { SampleDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21)) }
+    let(:document_tuple) { Hypostasis::Tuple.new(SampleDocument.to_s, subject.id.to_s).to_s }
+
+    def field_path(name, type)
+      'sample_docs\\' + document_tuple + '\\' + Hypostasis::Tuple.new(name.to_s, type.to_s).to_s
+    end
+
+    after do
+      subject.destroy
+    end
+
+    it { subject.id.wont_be_nil }
+    it { database.get(field_path(:name, String)).must_equal 'John' }
+    it { database.get(field_path(:age, Fixnum)).must_equal '21' }
+    it { database.get(field_path(:dob, Date)).must_equal Date.today.prev_year(21).to_s }
+  end
+
   describe '#save' do
     let(:document_tuple) { Hypostasis::Tuple.new(SampleDocument.to_s, @document.id.to_s).to_s }
 
@@ -46,5 +64,9 @@ describe Hypostasis::Document do
 
     it { SampleDocument.find(document_id).is_a?(SampleDocument).must_equal true }
     it { SampleDocument.find(document_id).id.must_equal document_id }
+  end
+
+  describe 'indexing' do
+
   end
 end
