@@ -1,3 +1,6 @@
+require 'hypostasis/document/persistence'
+require 'hypostasis/document/fields'
+
 module Hypostasis::Document
   def self.included(base)
     base.extend ClassMethods
@@ -13,24 +16,6 @@ module Hypostasis::Document
     @fields = {}
     self.class.fields.each {|name| @fields[name] = nil}
     attributes.each {|hsh| hsh.each {|name, value| @fields[name.to_sym] = value}}
-  end
-
-  def save
-    generate_id
-    self.class.namespace.transact do |tr|
-      tr.set(self.class.namespace.for_document(self), true.to_s)
-
-      @fields.each do |field_name, value|
-        tr.set(self.class.namespace.for_field(self, field_name, value.class.to_s), value.to_s)
-      end
-    end
-    self
-  end
-
-  def destroy
-    self.class.namespace.transact do |tr|
-      tr.clear_range_start_with(self.class.namespace.for_document(self))
-    end
   end
 
   def generate_id
@@ -54,31 +39,6 @@ module Hypostasis::Document
 
     def supported_field_types
       @@supported_field_types ||= %w{Fixnum Bignum String Integer Float Date DateTime Time Boolean}
-    end
-
-    def field(name, options = {})
-      register_field(name.to_sym)
-      create_accessors(name.to_s, options)
-    end
-
-    def fields
-      @@fields
-    end
-
-    def register_field(name)
-      @@fields = [] unless defined?(@@fields)
-      @@fields << name.to_sym
-    end
-
-    def create_accessors(name, options)
-      self.class_eval do
-        define_method(name) { @fields[name.to_sym] || nil }
-        define_method("#{name}=") {|value| @fields[name.to_sym] = value}
-      end
-    end
-
-    def create(*attributes)
-      self.new(*attributes).save
     end
 
     def find(id)
