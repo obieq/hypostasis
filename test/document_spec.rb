@@ -85,5 +85,9 @@ describe Hypostasis::Document do
     it { database.get_range_start_with(index_path(IndexedDocument, :name, 'Jane')).size.must_equal 1 }
 
     it { database.get_range_start_with(index_path(IndexedDocument, :age, 21)).size.must_equal 2 }
+
+    #it { IndexedDocument.find_where(name: 'John').size.must_equal 2 }
+    #it { IndexedDocument.find_where(age: 21).size.must_equal 2 }
+    #it { IndexedDocument.find_where(name: 'Tom').size.must_equal 1 }
   end
 end
