@@ -1,14 +1,15 @@
+require 'active_support/concern'
+
 require 'hypostasis/document/persistence'
 require 'hypostasis/document/fields'
 
 module Hypostasis::Document
-  def self.included(base)
-    base.extend ClassMethods
-    base.class_eval do
-      attr_reader :id
-      # Register somewhere?
-    end
-  end
+  extend ActiveSupport::Concern
+
+  include Hypostasis::Document::Persistence
+  include Hypostasis::Document::Fields
+
+  attr_reader :id
 
   def initialize(*attributes)
     self.class.namespace.open
