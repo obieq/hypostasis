@@ -1,13 +1,15 @@
 require 'active_support/concern'
 
-require 'hypostasis/document/persistence'
 require 'hypostasis/document/fields'
+require 'hypostasis/document/indexes'
+require 'hypostasis/document/persistence'
 
 module Hypostasis::Document
   extend ActiveSupport::Concern
 
-  include Hypostasis::Document::Persistence
   include Hypostasis::Document::Fields
+  include Hypostasis::Document::Indexes
+  include Hypostasis::Document::Persistence
 
   attr_reader :id
 

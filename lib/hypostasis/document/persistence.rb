@@ -10,6 +10,10 @@ module Hypostasis::Document
         @fields.each do |field_name, value|
           tr.set(self.class.namespace.for_field(self, field_name, value.class.to_s), value.to_s)
         end
+
+        indexed_fields_to_commit.each do |key|
+          tr.set(key, 'true')
+        end
       end
       self
     end

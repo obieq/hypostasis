@@ -19,6 +19,10 @@ class Hypostasis::Namespace
     true
   end
 
+  def to_s
+    @name
+  end
+
   def self.create(name, options = {})
     raise Hypostasis::Errors::NamespaceAlreadyCreated unless database[name].nil?
     merged_options = { data_model: :key_value }.merge(options)
