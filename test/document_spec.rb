@@ -85,9 +85,22 @@ describe Hypostasis::Document do
     it { database.get_range_start_with(index_path(IndexedDocument, :name, 'Jane')).size.must_equal 1 }
 
     it { database.get_range_start_with(index_path(IndexedDocument, :age, 21)).size.must_equal 2 }
+  end
 
-    #it { IndexedDocument.find_where(name: 'John').size.must_equal 2 }
-    #it { IndexedDocument.find_where(age: 21).size.must_equal 2 }
-    #it { IndexedDocument.find_where(name: 'Tom').size.must_equal 1 }
+  describe '.find_where' do
+    before do
+      IndexedDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
+      IndexedDocument.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
+      IndexedDocument.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
+      IndexedDocument.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
+    end
+
+    it { IndexedDocument.find_where(name: 'John').size.must_equal 2 }
+    it { IndexedDocument.find_where(age: 21).size.must_equal 2 }
+    it { IndexedDocument.find_where(name: 'Tom').size.must_equal 1 }
+    it { IndexedDocument.find_where(name: 'Tom').first.is_a?(IndexedDocument).must_equal true }
+
+    it { IndexedDocument.find_where(name: 'John', age: 23).size.must_equal 1 }
+    it { IndexedDocument.find_where(name: 'John', age: 23).first.is_a?(IndexedDocument).must_equal true }
   end
 end

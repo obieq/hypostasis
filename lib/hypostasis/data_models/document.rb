@@ -16,9 +16,14 @@ module Hypostasis::DataModels::Document
   end
 
   def for_index(document, field_name, value)
-    index_path = Hypostasis::Tuple.new('indexes', document.class.to_s).to_s
+    class_name = document.is_a?(Class) ? document.to_s : document.class.to_s
+    index_path = Hypostasis::Tuple.new('indexes', class_name).to_s
     value = value.to_s unless value.is_a?(Fixnum) || value.is_a?(Bignum)
-    field_path = Hypostasis::Tuple.new(field_name.to_s, value, document.id.to_s).to_s
+    if document.is_a?(Class)
+      field_path = Hypostasis::Tuple.new(field_name.to_s, value).to_s
+    else
+      field_path = Hypostasis::Tuple.new(field_name.to_s, value, document.id.to_s).to_s
+    end
     name.to_s + '\\' + index_path + '\\' + field_path
   end
 end

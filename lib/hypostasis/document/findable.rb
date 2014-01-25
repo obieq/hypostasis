@@ -23,30 +23,19 @@ module Hypostasis::Document
         document
       end
 
-      #def find_where(field_value_pairs)
-      #  results = {}
-      #  namespace.transact do |tr|
-      #    field_value_pairs.each do |field_name, value|
-      #      index_path = Hypostasis::Tuple.new('indexes', self.to_s).to_s
-      #      value = value.to_s unless value.is_a?(Fixnum) || value.is_a?(Bignum)
-      #      field_path = Hypostasis::Tuple.new(field_name.to_s, value).to_s
-      #      results[field_name] = tr.get_range_start_with(name.to_s + '\\' + index_path + '\\' + field_path)
-      #    end
-      #  end
-      #
-      #  if field_value_pairs.size > 1
-      #    # Handle multiple field-value pairs
-      #  end
-      #
-      #  final_results = []
-      #  results.each_value do |keys|
-      #    keys.each do |key|
-      #      final_results << find(Hypostasis::Tuple.unpack(key.key.split('\\').last).to_a.last)
-      #    end
-      #  end
-      #
-      #  final_results
-      #end
+      def find_where(field_value_pairs)
+        results = []
+        namespace.transact do |tr|
+          field_value_pairs.each do |field, value|
+            results << tr.get_range_start_with(namespace.for_index(self, field, value)).to_a
+          end
+        end
+        results.flatten!
+        results.collect! {|result| Hypostasis::Tuple.unpack(result.key.split('\\').last).to_a.last }.compact!
+        results.select! {|e| results.count(e) == field_value_pairs.size}
+        results.uniq!
+        results.collect! {|result| find(result) }
+      end
     end
   end
 end
