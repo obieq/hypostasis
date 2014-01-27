@@ -9,4 +9,3 @@ require 'hypostasis/data_models'
 require 'hypostasis/namespace'
 
 require 'hypostasis/document'
-require 'hypostasis/column_family'

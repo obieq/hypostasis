@@ -1,8 +1,7 @@
 require 'active_support/concern'
 
-require 'hypostasis/shared/namespaced'
-require 'hypostasis/shared/fields'
-
+require 'hypostasis/document/namespaced'
+require 'hypostasis/document/fields'
 require 'hypostasis/document/indexes'
 require 'hypostasis/document/persistence'
 require 'hypostasis/document/findable'
@@ -10,9 +9,8 @@ require 'hypostasis/document/findable'
 module Hypostasis::Document
   extend ActiveSupport::Concern
 
-  include Hypostasis::Shared::Namespaced
-  include Hypostasis::Shared::Fields
-
+  include Hypostasis::Document::Namespaced
+  include Hypostasis::Document::Fields
   include Hypostasis::Document::Indexes
   include Hypostasis::Document::Persistence
   include Hypostasis::Document::Findable

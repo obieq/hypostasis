@@ -3,6 +3,7 @@ module Hypostasis::Document
     extend ActiveSupport::Concern
 
     def indexed_fields_to_commit
+      self.class.class_eval { class_variable_set(:@@indexed_fields, []) unless class_variable_defined?(:@@indexed_fields) }
       self.class.indexed_fields.collect do |field_name|
         self.class.namespace.for_index(self, field_name, @fields[field_name])
       end
@@ -10,12 +11,16 @@ module Hypostasis::Document
 
     module ClassMethods
       def index(field_name, options = {})
-        @@indexed_fields = [] unless defined? @@indexed_fields
-        @@indexed_fields << field_name.to_sym
+        self.class_eval do
+          class_variable_set(:@@indexed_fields, []) unless class_variable_defined?(:@@indexed_fields)
+          registered_indexed_fields = class_variable_get(:@@indexed_fields)
+          registered_indexed_fields << field_name.to_sym
+          class_variable_set(:@@indexed_fields, registered_indexed_fields)
+        end
       end
 
       def indexed_fields
-        @@indexed_fields
+        self.class_eval { class_variable_get(:@@indexed_fields) }
       end
     end
   end

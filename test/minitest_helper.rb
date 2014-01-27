@@ -15,7 +15,6 @@ require 'minitest/autorun'
 
 require 'support/sample_document'
 require 'support/indexed_document'
-require 'support/sample_family'
 
 class Minitest::Spec
 

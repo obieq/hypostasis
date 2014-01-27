@@ -1,4 +1,4 @@
-module Hypostasis::Shared
+module Hypostasis::Document
   module Fields
     extend ActiveSupport::Concern
 
