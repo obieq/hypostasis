@@ -73,6 +73,44 @@ basic language types currently suported include the following:
 * Time
 * Boolean
 
+### Document Data Model
+
+    require 'hypostasis'
+
+    ns = Hypostasis::Connection.create_namespace('keystore', {data_model: :document})
+
+    class SampleDocument
+      include Hypostasis::Document
+
+      field :name
+      field :age
+      field :dob
+
+      index :name
+      index :age
+    end
+
+    SampleDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
+
+    SampleDocument.find(<<id>>)
+
+    SampleDocument.find_where(name: 'John')
+    SampleDocument.find_where(age: 21)
+
+The Document data model provides a simple document-oriented data model on top
+of FoundationDB, including simple indexing. Like the Key-Value data model the
+document-oriented model is able to automatically encode and reconstitute
+certain basic Ruby data types, including the following:
+
+* String
+* Fixnum
+* Bignum
+* Float
+* Date
+* DateTime
+* Time
+* Boolean
+
 ## Contributing
 
 1. Fork it
