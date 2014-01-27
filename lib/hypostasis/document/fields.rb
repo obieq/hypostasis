@@ -7,7 +7,6 @@ module Hypostasis::Document
         register_field(name.to_sym)
         create_accessors(name.to_s, options)
       end
-      alias_method :column, :field
 
       def fields
         self.class_eval { class_variable_get(:@@fields) }

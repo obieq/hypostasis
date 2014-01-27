@@ -6,9 +6,9 @@ module Hypostasis::Document
       def find(id)
         document_keys = []
         namespace.transact do |tr|
-          document_keys = tr.get_range_start_with(namespace.for_document(self, id))
+          document_keys = tr.get_range_start_with(namespace.for_document(self, id)).to_a
         end
-        #raise Hypostasis::Errors::DocumentNotFound if document_keys.empty?
+        raise Hypostasis::Errors::DocumentNotFound if document_keys.empty?
         attributes = {}
         id = Hypostasis::Tuple.unpack(document_keys.first.key.split('\\')[1]).to_a[1]
         document_keys.each do |key|
