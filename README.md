@@ -43,10 +43,10 @@ Or install it yourself as:
 
 ## Usage
 
-Hypostasis is still very much Alpha quality software, only suitable for
-experimentation. But, feel free to play around with it. Documentation will be
-written to define how to use the various data models provided by Hypostasis as
-the project matures and the APIs stabilize.
+Hypostasis is beta quality software, please keep this in mind. Until the first
+major version is released the API is not to be considered stable. Feel free to
+play around with it and open issues for anything you find that causes a problem
+or for any features you want to see added.
 
 Until then, we suggest reading the code and the tests.
 
