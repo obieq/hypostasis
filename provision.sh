@@ -9,8 +9,7 @@ sudo dpkg -i foundationdb-clients_1.0.1-1_amd64.deb foundationdb-server_1.0.1-1_
 
 sudo su - vagrant
 cd /home/vagrant
-\curl -sSL https://get.rvm.io | bash -s stable --ruby
+\curl -sSL https://get.rvm.io | bash -s stable --ruby --gems=fdb
 source /usr/local/rvm/scripts/rvm
-rvm install ruby-2.0.0-p353
 
 cd /vagrant; bundle
