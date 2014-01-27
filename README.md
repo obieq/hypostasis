@@ -20,12 +20,8 @@ variety of data models while using the same underlying storage system, provided
 by FoundationDB. The data models Hypostasis currently aims to support are the
 following:
 
-* Document-Oriented
-* Simple Key-Value (Wrapper for naked FoundationDB)
-* Relational (an RDBMS without SQL)
-* Column-Oriented (like Cassandra without CQL)
-
-The initial focus will be on the Document-Oriented and simple Key-Value models.
+* Document
+* Key-Value
 
 ## Installation
 
