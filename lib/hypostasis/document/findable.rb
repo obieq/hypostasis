@@ -25,6 +25,8 @@ module Hypostasis::Document
         results.collect! {|result| find(result) }
       end
 
+      private
+
       def reconstitute_document(keys)
         attributes = {}
         keys.each do |key|

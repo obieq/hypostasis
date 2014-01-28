@@ -2,6 +2,8 @@ module Hypostasis::Document
   module Indexes
     extend ActiveSupport::Concern
 
+    private
+
     def indexed_fields_to_commit
       self.class.class_eval { class_variable_set(:@@indexed_fields, []) unless class_variable_defined?(:@@indexed_fields) }
       self.class.indexed_fields.collect do |field_name|

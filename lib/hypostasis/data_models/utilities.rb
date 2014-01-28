@@ -1,4 +1,6 @@
 module Hypostasis::DataModels::Utilities
+  private
+
   def reconstitute_value(tuple, raw_value)
     data_type = tuple.to_a.last
     case data_type

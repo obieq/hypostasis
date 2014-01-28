@@ -12,6 +12,8 @@ module Hypostasis::Document
         self.class_eval { class_variable_get(:@@fields) }
       end
 
+      private
+
       def register_field(name)
         self.class_eval do
           class_variable_set(:@@fields, []) unless class_variable_defined?(:@@fields)
