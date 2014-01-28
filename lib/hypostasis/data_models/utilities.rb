@@ -20,6 +20,8 @@ module Hypostasis::DataModels::Utilities
         true
       when 'FalseClass'
         false
+      when 'NilClass'
+        nil
       else
         raise Hypostasis::Errors::UnknownValueType
     end

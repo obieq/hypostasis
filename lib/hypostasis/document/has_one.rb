@@ -4,10 +4,11 @@ module Hypostasis::Document
 
     module ClassMethods
       def has_one(klass)
-        register_field(klass.to_sym)
+        accessor_name = klass.to_s
         child_klass = klass.to_s.classify
+        self_klass = "#{self.to_s.underscore}_id".to_sym
         self.class_eval do
-          define_method(klass.to_s) { child_klass.constantize.find_where(klass.to_sym => @id).first }
+          define_method(accessor_name) { child_klass.constantize.find_where(self_klass => @id).first }
         end
       end
     end

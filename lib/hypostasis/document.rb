@@ -29,6 +29,7 @@ module Hypostasis::Document
     @fields = {}
     self.class.fields.each {|name| @fields[name] = nil}
     attributes.each {|hsh| hsh.each {|name, value| @fields[name.to_sym] = value}}
+    self
   end
 
   def generate_id

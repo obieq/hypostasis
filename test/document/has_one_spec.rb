@@ -26,7 +26,7 @@ describe 'Document has_one Relationship' do
   before do
     Hypostasis::Connection.create_namespace 'hasone_docs', data_model: :document
     @owner = HasOneOwnerDocument.create(name: 'John', age: '25')
-    @child = HasOneChildDocument.create(name: 'James', age: '6', has_one_parent_document: @owner.id)
+    @child = HasOneChildDocument.create(name: 'James', age: '6', has_one_owner_document_id: @owner.id)
   end
 
   after do
