@@ -27,7 +27,8 @@ private
     rescue RuntimeError => e
       if e.message.match(/^Unknown data type in DB:/)
         key
-        else raise e
+      else
+        raise e
       end
     end
   end
