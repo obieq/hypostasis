@@ -5,7 +5,7 @@ module Hypostasis::DataModels::Document
     end
   end
 
-  def for_document(document, id: nil)
+  def for_document(document, id = nil)
     class_name = document.is_a?(Class) ? document.to_s : document.class.to_s
     document_id = id.nil? ? document.id.to_s : id.to_s
     name.to_s + '\\' + Hypostasis::Tuple.new(class_name, document_id).to_s
