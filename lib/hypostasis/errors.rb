@@ -11,4 +11,5 @@ module Hypostasis::Errors
   class UnknownValueType < StandardError; end
   class MustDefineFieldType < StandardError; end
   class ColumnGroupNotFound < StandardError; end
+  class DocumentNotFound < StandardError; end
 end

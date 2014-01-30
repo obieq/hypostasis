@@ -48,4 +48,20 @@ describe Hypostasis::Document do
     it { subject.id.wont_be_nil }
     it { database.get(document_path(subject)).must_equal subject.to_bson }
   end
+
+  describe '.find' do
+    let(:document_id) { subject.save.id }
+    let(:found) { SampleDocument.find(document_id) }
+
+    after do
+      subject.destroy
+    end
+
+    it { found.is_a?(SampleDocument).must_equal true }
+    it { found.id.must_equal document_id }
+
+    it { found.name.must_equal 'John' }
+    it { found.age.must_equal 21 }
+    it { found.dob.must_equal Date.today.prev_year(21).to_time }
+  end
 end

@@ -2,6 +2,7 @@ require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
 
 require 'hypostasis/document/persistence'
+require 'hypostasis/document/findable'
 
 module Hypostasis::Document
   extend ActiveSupport::Concern
@@ -10,6 +11,7 @@ module Hypostasis::Document
   include Hypostasis::Shared::Fields
 
   include Hypostasis::Document::Persistence
+  include Hypostasis::Document::Findable
 
   attr_reader :id
 
