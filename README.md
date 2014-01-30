@@ -19,8 +19,10 @@ variety of data models while using the same underlying storage system, provided
 by FoundationDB. The data models Hypostasis currently aims to support are the
 following:
 
-* Document
 * Key-Value
+* Column Group
+* Document
+
 
 ## Installation
 
@@ -68,14 +70,14 @@ basic language types currently suported include the following:
 * Time
 * Boolean
 
-### Document Data Model
+### ColumnGroup Data Model
 
     require 'hypostasis'
 
-    ns = Hypostasis::Connection.create_namespace('keystore', {data_model: :document})
+    ns = Hypostasis::Connection.create_namespace('keystore', {data_model: :column_group})
 
-    class SampleDocument
-      include Hypostasis::Document
+    class SampleColumnGroup
+      include Hypostasis::ColumnGroup
 
       field :name
       field :age
@@ -85,17 +87,19 @@ basic language types currently suported include the following:
       index :age
     end
 
-    SampleDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
+    SampleColumnGroup.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
 
-    SampleDocument.find(<<id>>)
+    SampleColumnGroup.find(<<id>>)
 
-    SampleDocument.find_where(name: 'John')
-    SampleDocument.find_where(age: 21)
+    SampleColumnGroup.find_where(name: 'John')
+    SampleColumnGroup.find_where(age: 21)
 
-The Document data model provides a simple document-oriented data model on top
-of FoundationDB, including simple indexing. Like the Key-Value data model the
-document-oriented model is able to automatically encode and reconstitute
-certain basic Ruby data types, including the following:
+The Column Group data model provides a data model very similar to what would be
+provided by a traditional RDBMS or Column-Family data store with data organized
+along the idea of tables and rows, but mapped directly to the underlying
+key-value store of FoundationDB. Like the other data models, the Column Group
+model is able to automatically encode and reconstitute certain basic Ruby data
+types, including the following:
 
 * String
 * Fixnum
