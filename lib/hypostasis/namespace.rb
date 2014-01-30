@@ -58,6 +58,8 @@ private
         self.extend Hypostasis::DataModels::KeyValue
       when :column_group
         self.extend Hypostasis::DataModels::ColumnGroup
+      when :document
+        self.extend Hypostasis::DataModels::Document
       else
         raise Hypostasis::Errors::UnknownNamespaceDataModel, "#{@data_model} unknown"
     end

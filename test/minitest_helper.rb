@@ -12,6 +12,7 @@ require 'minitest/autorun'
 
 require 'support/sample_column'
 require 'support/indexed_column'
+require 'support/sample_document'
 
 class Minitest::Spec
 
@@ -19,17 +20,23 @@ class Minitest::Spec
     @database ||= FDB.open
   end
 
-  def column_path(document)
+  def document_path(document)
     document_namespace = document.class.namespace.to_s
     document_tuple = Hypostasis::Tuple.new(document.class.to_s, document.id.to_s).to_s
     document_namespace + '\\' + document_tuple
   end
 
-  def field_path(document, name, type)
-    document_namespace = document.class.namespace.to_s
-    document_tuple = Hypostasis::Tuple.new(document.class.to_s, document.id.to_s).to_s
+  def column_path(column_group)
+    column_namespace = column_group.class.namespace.to_s
+    column_tuple = Hypostasis::Tuple.new(column_group.class.to_s, column_group.id.to_s).to_s
+    column_namespace + '\\' + column_tuple
+  end
+
+  def field_path(column_group, name, type)
+    column_namespace = column_group.class.namespace.to_s
+    column_tuple = Hypostasis::Tuple.new(column_group.class.to_s, column_group.id.to_s).to_s
     field_tuple = Hypostasis::Tuple.new(name.to_s, type.to_s).to_s
-    document_namespace + '\\' + document_tuple + '\\' + field_tuple
+    column_namespace + '\\' + column_tuple + '\\' + field_tuple
   end
 
   def index_path(klass, field_name, value = nil)

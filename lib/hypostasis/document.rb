@@ -1,26 +1,15 @@
 require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
 
-require 'hypostasis/column_group/indexes'
-require 'hypostasis/column_group/persistence'
-require 'hypostasis/column_group/findable'
-require 'hypostasis/column_group/belongs_to'
-require 'hypostasis/column_group/has_one'
-require 'hypostasis/column_group/has_many'
+require 'hypostasis/document/persistence'
 
-module Hypostasis::ColumnGroup
+module Hypostasis::Document
   extend ActiveSupport::Concern
 
   include Hypostasis::Shared::Namespaced
   include Hypostasis::Shared::Fields
 
-  include Hypostasis::ColumnGroup::Indexes
-  include Hypostasis::ColumnGroup::Persistence
-  include Hypostasis::ColumnGroup::Findable
-
-  include Hypostasis::ColumnGroup::BelongsTo
-  include Hypostasis::ColumnGroup::HasOne
-  include Hypostasis::ColumnGroup::HasMany
+  include Hypostasis::Document::Persistence
 
   attr_reader :id
 
@@ -39,6 +28,10 @@ module Hypostasis::ColumnGroup
 
   def set_id(id)
     @id ||= id.to_s
+  end
+
+  def to_bson
+    @fields.to_bson
   end
 
   module ClassMethods
