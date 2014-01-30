@@ -62,6 +62,6 @@ describe Hypostasis::Document do
 
     it { found.name.must_equal 'John' }
     it { found.age.must_equal 21 }
-    it { found.dob.must_equal Date.today.prev_year(21).to_time }
+    it { found.dob.must_equal DateTime.now.utc.at_midnight.prev_year(21).to_time }
   end
 end
