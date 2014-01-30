@@ -1,5 +1,6 @@
 require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
+require 'hypostasis/shared/indexes'
 
 require 'hypostasis/document/persistence'
 require 'hypostasis/document/findable'
@@ -9,6 +10,7 @@ module Hypostasis::Document
 
   include Hypostasis::Shared::Namespaced
   include Hypostasis::Shared::Fields
+  include Hypostasis::Shared::Indexes
 
   include Hypostasis::Document::Persistence
   include Hypostasis::Document::Findable

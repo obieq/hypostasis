@@ -6,9 +6,7 @@ module Hypostasis::Document
       generate_id
       self.class.namespace.transact do |tr|
         tr.set(self.class.namespace.for_document(self), @fields.to_bson)
-      #  indexed_fields_to_commit.each do |key|
-      #    tr.set(key, 'true')
-      #  end
+        indexed_fields_to_commit.each {|key| tr.set(key, 'true') }
       end
       self
     end

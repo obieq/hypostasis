@@ -1,7 +1,7 @@
 require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
+require 'hypostasis/shared/indexes'
 
-require 'hypostasis/column_group/indexes'
 require 'hypostasis/column_group/persistence'
 require 'hypostasis/column_group/findable'
 require 'hypostasis/column_group/belongs_to'
@@ -13,8 +13,8 @@ module Hypostasis::ColumnGroup
 
   include Hypostasis::Shared::Namespaced
   include Hypostasis::Shared::Fields
+  include Hypostasis::Shared::Indexes
 
-  include Hypostasis::ColumnGroup::Indexes
   include Hypostasis::ColumnGroup::Persistence
   include Hypostasis::ColumnGroup::Findable
 

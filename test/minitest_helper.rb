@@ -15,6 +15,7 @@ require 'minitest/autorun'
 require 'support/sample_column'
 require 'support/indexed_column'
 require 'support/sample_document'
+require 'support/indexed_document'
 
 class Minitest::Spec
 
