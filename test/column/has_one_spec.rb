@@ -1,7 +1,7 @@
 require 'minitest_helper'
 
 class HasOneOwnerDocument
-  include Hypostasis::Document
+  include Hypostasis::ColumnGroup
 
   use_namespace 'hasone_docs'
 
@@ -12,7 +12,7 @@ class HasOneOwnerDocument
 end
 
 class HasOneChildDocument
-  include Hypostasis::Document
+  include Hypostasis::ColumnGroup
 
   use_namespace 'hasone_docs'
 
@@ -22,9 +22,9 @@ class HasOneChildDocument
   belongs_to :has_one_owner_document
 end
 
-describe 'Document has_one Relationship' do
+describe 'ColumnGroup has_one Relationship' do
   before do
-    Hypostasis::Connection.create_namespace 'hasone_docs', data_model: :document
+    Hypostasis::Connection.create_namespace 'hasone_docs', data_model: :column_group
     @owner = HasOneOwnerDocument.create(name: 'John', age: '25')
     @child = HasOneChildDocument.create(name: 'James', age: '6', has_one_owner_document_id: @owner.id)
   end

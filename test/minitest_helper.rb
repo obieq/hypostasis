@@ -13,8 +13,8 @@ require 'hypostasis'
 
 require 'minitest/autorun'
 
-require 'support/sample_document'
-require 'support/indexed_document'
+require 'support/sample_column'
+require 'support/indexed_column'
 
 class Minitest::Spec
 
@@ -22,7 +22,7 @@ class Minitest::Spec
     @database ||= FDB.open
   end
 
-  def document_path(document)
+  def column_path(document)
     document_namespace = document.class.namespace.to_s
     document_tuple = Hypostasis::Tuple.new(document.class.to_s, document.id.to_s).to_s
     document_namespace + '\\' + document_tuple

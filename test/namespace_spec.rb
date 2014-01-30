@@ -137,7 +137,7 @@ describe Hypostasis::Namespace do
     end
   end
 
-  describe 'for a Document namespace' do
+  describe 'for a ColumnGroup namespace' do
     before do
       subject
     end
@@ -146,9 +146,9 @@ describe Hypostasis::Namespace do
       subject.destroy
     end
 
-    let(:subject) { Hypostasis::Namespace.create('document_space', { data_model: :document }) }
+    let(:subject) { Hypostasis::Namespace.create('column_space', { data_model: :column_group }) }
 
-    it { database.get('document_space\\' + Hypostasis::Tuple.new(['config','data_model']).to_s).must_equal 'document' }
+    it { database.get('column_space\\' + Hypostasis::Tuple.new(['config','data_model']).to_s).must_equal 'column_group' }
   end
 
   describe 'for an unknown namespace type' do

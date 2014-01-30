@@ -1,7 +1,7 @@
 require 'minitest_helper'
 
 class HasManyOwnerDocument
-  include Hypostasis::Document
+  include Hypostasis::ColumnGroup
 
   use_namespace 'hasmany_docs'
 
@@ -12,7 +12,7 @@ class HasManyOwnerDocument
 end
 
 class HasManyChildDocument
-  include Hypostasis::Document
+  include Hypostasis::ColumnGroup
 
   use_namespace 'hasmany_docs'
 
@@ -22,9 +22,9 @@ class HasManyChildDocument
   belongs_to :has_many_owner_document
 end
 
-describe 'Document has_many Relationship' do
+describe 'ColumnGroup has_many Relationship' do
   before do
-    Hypostasis::Connection.create_namespace 'hasmany_docs', data_model: :document
+    Hypostasis::Connection.create_namespace 'hasmany_docs', data_model: :column_group
     @owner = HasManyOwnerDocument.create(name: 'John', age: '25')
     @children = []
     @children << HasManyChildDocument.create(name: 'James', age: '6', has_many_owner_document_id: @owner.id)

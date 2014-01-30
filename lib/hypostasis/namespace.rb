@@ -56,8 +56,8 @@ private
     case @data_model
       when :key_value
         self.extend Hypostasis::DataModels::KeyValue
-      when :document
-        self.extend Hypostasis::DataModels::Document
+      when :column_group
+        self.extend Hypostasis::DataModels::ColumnGroup
       else
         raise Hypostasis::Errors::UnknownNamespaceDataModel, "#{@data_model} unknown"
     end

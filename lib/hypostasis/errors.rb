@@ -10,5 +10,5 @@ module Hypostasis::Errors
   class TupleExhausted < StandardError; end
   class UnknownValueType < StandardError; end
   class MustDefineFieldType < StandardError; end
-  class DocumentNotFound < StandardError; end
+  class ColumnGroupNotFound < StandardError; end
 end

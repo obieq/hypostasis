@@ -1,14 +1,14 @@
-module Hypostasis::Document
+module Hypostasis::ColumnGroup
   module Findable
     extend ActiveSupport::Concern
 
     module ClassMethods
       def find(id)
         document_keys = namespace.transact do |tr|
-          tr.get_range_start_with(namespace.for_document(self, id)).to_a
+          tr.get_range_start_with(namespace.for_column_group(self, id)).to_a
         end
-        raise Hypostasis::Errors::DocumentNotFound if document_keys.empty?
-        reconstitute_document(document_keys)
+        raise Hypostasis::Errors::ColumnGroupNotFound if document_keys.empty?
+        reconstitute_column_group(document_keys)
       end
 
       def find_where(field_value_pairs)
@@ -27,7 +27,7 @@ module Hypostasis::Document
 
       private
 
-      def reconstitute_document(keys)
+      def reconstitute_column_group(keys)
         attributes = {}
         keys.each do |key|
           attribute_tuple = key.key.split('\\')[2]

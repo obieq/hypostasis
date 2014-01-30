@@ -1,11 +1,11 @@
-module Hypostasis::Document
+module Hypostasis::ColumnGroup
   module Persistence
     extend ActiveSupport::Concern
 
     def save
       generate_id
       self.class.namespace.transact do |tr|
-        tr.set(self.class.namespace.for_document(self), true.to_s)
+        tr.set(self.class.namespace.for_column_group(self), true.to_s)
 
         @fields.each do |field_name, value|
           tr.set(self.class.namespace.for_field(self, field_name, value.class.to_s), value.to_s)
@@ -20,7 +20,7 @@ module Hypostasis::Document
 
     def destroy
       self.class.namespace.transact do |tr|
-        tr.clear_range_start_with(self.class.namespace.for_document(self))
+        tr.clear_range_start_with(self.class.namespace.for_column_group(self))
       end
     end
 

@@ -1,4 +1,4 @@
-module Hypostasis::Document
+module Hypostasis::ColumnGroup
   module Fields
     extend ActiveSupport::Concern
 

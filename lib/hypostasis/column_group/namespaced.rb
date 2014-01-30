@@ -1,11 +1,11 @@
-module Hypostasis::Document
+module Hypostasis::ColumnGroup
   module Namespaced
     extend ActiveSupport::Concern
 
     module ClassMethods
       def use_namespace(namespace)
         data_model = :key_value
-        data_model = :document if self.included_modules.include?(Hypostasis::Document)
+        data_model = :column_group if self.included_modules.include?(Hypostasis::ColumnGroup)
         self.class_eval do
           class_variable_set(:@@namespace, Hypostasis::Namespace.new(namespace.to_s, data_model))
         end
