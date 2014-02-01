@@ -1,7 +1,6 @@
 module Hypostasis::DataModels::ForIndexes
-  def for_index(document, field_name, value)
-    class_name = get_class_name(document)
-    index_path = Hypostasis::Tuple.new('indexes', class_name).to_s
+  def for_index(object, field_name, value)
+    index_path = Hypostasis::Tuple.new('indexes', get_class_name(object)).to_s
     value = value.to_s unless value.is_a?(Fixnum) || value.is_a?(Bignum)
     if document.is_a?(Class)
       field_path = Hypostasis::Tuple.new(field_name.to_s, value).to_s
