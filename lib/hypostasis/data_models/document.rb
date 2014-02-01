@@ -9,8 +9,6 @@ module Hypostasis::DataModels::Document
   end
 
   def for_document(document, id = nil)
-    class_name = get_class_name(document)
-    document_id = get_object_id(document, id)
-    name.to_s + '\\' + Hypostasis::Tuple.new(class_name, document_id).to_s
+    name.to_s + '\\' + Hypostasis::Tuple.new(get_class_name(document), get_object_id(document, id)).to_s
   end
 end
