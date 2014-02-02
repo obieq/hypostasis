@@ -12,6 +12,20 @@ module Hypostasis::Document
         reconstitute_document(fdb_key.value, id)
       end
 
+      def find_where(field_value_pairs)
+        results = []
+        namespace.transact do |tr|
+          field_value_pairs.each do |field, value|
+            results << tr.get_range_start_with(namespace.for_index(self, field, value)).to_a
+          end
+        end
+        results.flatten!
+        results.collect! {|result| Hypostasis::Tuple.unpack(result.key.split('\\').last).to_a.last }.compact!
+        results.select! {|e| results.count(e) == field_value_pairs.size}
+        results.uniq!
+        results.collect! {|result| find(result) }
+      end
+
       private
 
       def reconstitute_document(bson_value, id)

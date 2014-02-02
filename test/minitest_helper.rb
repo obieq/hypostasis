@@ -9,6 +9,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'hypostasis'
 
 require 'active_support/core_ext'
+require 'active_support/time_with_zone'
 
 require 'minitest/autorun'
 
@@ -16,6 +17,8 @@ require 'support/sample_column'
 require 'support/indexed_column'
 require 'support/sample_document'
 require 'support/indexed_document'
+
+Time.zone = 'UTC'
 
 class Minitest::Spec
 

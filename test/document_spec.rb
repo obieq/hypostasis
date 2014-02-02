@@ -5,10 +5,12 @@ describe Hypostasis::Document do
 
   before do
     Hypostasis::Connection.create_namespace 'sample_documents', data_model: :document
+    Hypostasis::Connection.create_namespace 'indexed_documents', data_model: :document
   end
 
   after do
     Hypostasis::Connection.destroy_namespace 'sample_documents'
+    Hypostasis::Connection.destroy_namespace 'indexed_documents'
   end
 
   it { subject.must_respond_to :name }
@@ -62,6 +64,23 @@ describe Hypostasis::Document do
 
     it { found.name.must_equal 'John' }
     it { found.age.must_equal 21 }
-    it { found.dob.must_equal DateTime.now.utc.at_midnight.prev_year(21).to_time }
+    it { found.dob.must_equal Date.today.prev_year(21).at_midnight.to_time }
+  end
+
+  describe '.find_where' do
+    before do
+      IndexedDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
+      IndexedDocument.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
+      IndexedDocument.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
+      IndexedDocument.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
+    end
+
+    it { IndexedDocument.find_where(name: 'John').size.must_equal 2 }
+    it { IndexedDocument.find_where(age: 21).size.must_equal 2 }
+    it { IndexedDocument.find_where(name: 'Tom').size.must_equal 1 }
+    it { IndexedDocument.find_where(name: 'Tom').first.is_a?(IndexedDocument).must_equal true }
+
+    it { IndexedDocument.find_where(name: 'John', age: 23).size.must_equal 1 }
+    it { IndexedDocument.find_where(name: 'John', age: 23).first.is_a?(IndexedDocument).must_equal true }
   end
 end
