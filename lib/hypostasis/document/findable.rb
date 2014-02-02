@@ -16,7 +16,7 @@ module Hypostasis::Document
         results = []
         namespace.transact do |tr|
           field_value_pairs.each do |field, value|
-            results << tr.get_range_start_with(namespace.for_index(self, field, value)).to_a
+            results << tr.get_range_start_with(namespace.for_index(self, field, value), {:streaming_mode => :want_all}).to_a
           end
         end
         results.flatten!
