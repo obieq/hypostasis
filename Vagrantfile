@@ -4,14 +4,14 @@
 Vagrant.configure('2') do |config|
   config.vm.box = 'precise64'
 
-  config.vm.provider :virtualbox do |vb|
-    vb.box_url = 'http://files.vagrantup.com/precise64.box'
+  config.vm.provider :virtualbox do |vb, override|
+    override.vm.box_url = 'http://files.vagrantup.com/precise64.box'
     vb.memory = 4096
   end
 
-  config.vm.provider :vmware_fusion do |vw|
-    vw.box = 'precise64_vmware'
-    vw.box_url = 'http://files.vagrantup.com/precise64_vmware.box'
+  config.vm.provider :vmware_fusion do |vw, override|
+    override.vm.box = 'precise64_vmware'
+    override.vm.box_url = 'http://files.vagrantup.com/precise64_vmware.box'
     vw.memory = 4096
   end
 
