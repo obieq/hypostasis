@@ -27,6 +27,8 @@ matrix:
       jdk: openjdk6
     - rvm: 2.1.0
       jdk: oraclejdk7
+  allow_failures:
+    - rvm: jruby-19mode
 before_install:
   - wget https://foundationdb.com/downloads/I_accept_the_FoundationDB_Community_License_Agreement/1.0.1/foundationdb-clients_1.0.1-1_amd64.deb
   - wget https://foundationdb.com/downloads/I_accept_the_FoundationDB_Community_License_Agreement/1.0.1/foundationdb-server_1.0.1-1_amd64.deb
