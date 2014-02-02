@@ -23,7 +23,17 @@ module Hypostasis::Document
         results.collect! {|result| Hypostasis::Tuple.unpack(result.key.split('\\').last).to_a.last }.compact!
         results.select! {|e| results.count(e) == field_value_pairs.size}
         results.uniq!
-        results.collect! {|result| find(result) }
+        find_many(results)
+      end
+
+      def find_many(ids)
+        results = []
+        namespace.transact do |tr|
+          ids.each {|id| results << [tr.get(namespace.for_document(self, id)), id]}
+        end
+        results.collect! do |result|
+          reconstitute_document(result[0], result[1])
+        end
       end
 
       private
