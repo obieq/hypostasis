@@ -4,5 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rubysl', platform: :rbx
+gem 'rubinius-coverage', platform: :rbx
 
 gem 'codeclimate-test-reporter', group: :test, require: nil

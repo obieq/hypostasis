@@ -11,5 +11,6 @@ sudo su - vagrant
 cd /home/vagrant
 \curl -sSL https://get.rvm.io | bash -s stable --ruby --gems=fdb
 source /usr/local/rvm/scripts/rvm
+rvm install jruby,rbx
 
-cd /vagrant; bundle
+cd /vagrant; rvm all do bundle

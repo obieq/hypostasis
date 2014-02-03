@@ -3,7 +3,6 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.0
-  - rbx-2.2
   - rbx
   - jruby-19mode
 jdk:
@@ -28,10 +27,6 @@ matrix:
     - rvm: 2.1.0
       jdk: openjdk6
     - rvm: 2.1.0
-      jdk: oraclejdk7
-    - rvm: rbx-2.2
-      jdk: openjdk6
-    - rvm: rbx-2.2
       jdk: oraclejdk7
     - rvm: rbx
       jdk: openjdk6

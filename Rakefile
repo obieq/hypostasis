@@ -13,6 +13,11 @@ task :perf do
   tests.each {|test_file| system test_file}
 end
 
+desc 'Run multiple tests with multiple rubies'
+task :multitest do
+  system 'rvm all do rake test'
+end
+
 if system('vagrant --version > /dev/null 2>&1') && system('vagrant exec -h > /dev/null 2>&1')
   desc 'Run tests within Vagrant'
   task :vagrant_test do
