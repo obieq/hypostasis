@@ -7,6 +7,7 @@ require 'hypostasis/document/persistence'
 require 'hypostasis/document/findable'
 require 'hypostasis/document/belongs_to'
 require 'hypostasis/document/has_one'
+require 'hypostasis/document/has_many'
 
 module Hypostasis::Document
   extend ActiveSupport::Concern
@@ -20,6 +21,7 @@ module Hypostasis::Document
   include Hypostasis::Document::Findable
   include Hypostasis::Document::BelongsTo
   include Hypostasis::Document::HasOne
+  include Hypostasis::Document::HasMany
 
   attr_reader :id
 
