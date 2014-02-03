@@ -29,16 +29,17 @@ module Hypostasis::ColumnGroup
 
       def reconstitute_column_group(keys)
         attributes = {}
-        keys.each do |key|
-          attribute_tuple = key.key.split('\\')[2]
-          next if attribute_tuple.nil?
-          unpacked_key = Hypostasis::Tuple.unpack(attribute_tuple)
-          raw_value = key.value
-          attributes[unpacked_key.to_a[0].to_sym] = reconstitute_value(unpacked_key, raw_value)
-        end
+        keys.each {|key| attributes.merge(parse_key(key))}
         document = self.new(attributes)
         document.set_id(Hypostasis::Tuple.unpack(keys.first.key.split('\\')[1]).to_a[1])
         document
+      end
+
+      def parse_key(key)
+        attribute_tuple = key.key.split('\\')[2]
+        return {} if attribute_tuple.nil?
+        unpacked_key = Hypostasis::Tuple.unpack(attribute_tuple)
+        {unpacked_key.to_a[0].to_sym => reconstitute_value(unpacked_key, key.value)}
       end
     end
   end
