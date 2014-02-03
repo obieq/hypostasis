@@ -1,4 +1,4 @@
-module Hypostasis::ColumnGroup
+module Hypostasis::Shared
   module HasMany
     extend ActiveSupport::Concern
 

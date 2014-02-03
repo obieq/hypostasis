@@ -2,12 +2,12 @@ require 'hypostasis/shared/utilities'
 require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
 require 'hypostasis/shared/indexes'
+require 'hypostasis/shared/belongs_to'
+require 'hypostasis/shared/has_one'
+require 'hypostasis/shared/has_many'
 
 require 'hypostasis/document/persistence'
 require 'hypostasis/document/findable'
-require 'hypostasis/document/belongs_to'
-require 'hypostasis/document/has_one'
-require 'hypostasis/document/has_many'
 
 module Hypostasis::Document
   extend ActiveSupport::Concern
@@ -16,12 +16,12 @@ module Hypostasis::Document
   include Hypostasis::Shared::Namespaced
   include Hypostasis::Shared::Fields
   include Hypostasis::Shared::Indexes
+  include Hypostasis::Shared::BelongsTo
+  include Hypostasis::Shared::HasOne
+  include Hypostasis::Shared::HasMany
 
   include Hypostasis::Document::Persistence
   include Hypostasis::Document::Findable
-  include Hypostasis::Document::BelongsTo
-  include Hypostasis::Document::HasOne
-  include Hypostasis::Document::HasMany
 
   attr_reader :id
 

@@ -2,12 +2,12 @@ require 'hypostasis/shared/utilities'
 require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
 require 'hypostasis/shared/indexes'
+require 'hypostasis/shared/belongs_to'
+require 'hypostasis/shared/has_one'
+require 'hypostasis/shared/has_many'
 
 require 'hypostasis/column_group/persistence'
 require 'hypostasis/column_group/findable'
-require 'hypostasis/column_group/belongs_to'
-require 'hypostasis/column_group/has_one'
-require 'hypostasis/column_group/has_many'
 
 module Hypostasis::ColumnGroup
   extend ActiveSupport::Concern
@@ -16,13 +16,12 @@ module Hypostasis::ColumnGroup
   include Hypostasis::Shared::Namespaced
   include Hypostasis::Shared::Fields
   include Hypostasis::Shared::Indexes
+  include Hypostasis::Shared::BelongsTo
+  include Hypostasis::Shared::HasOne
+  include Hypostasis::Shared::HasMany
 
   include Hypostasis::ColumnGroup::Persistence
   include Hypostasis::ColumnGroup::Findable
-
-  include Hypostasis::ColumnGroup::BelongsTo
-  include Hypostasis::ColumnGroup::HasOne
-  include Hypostasis::ColumnGroup::HasMany
 
   attr_reader :id
 
