@@ -12,7 +12,7 @@ module Hypostasis::Shared
   attr_reader :id
 
   def initialize(*attributes)
-    self.class.namespace.open
+    self.class.class_variable_get(:@@namespace).open
     @fields = {}
     self.class.fields.each {|name| @fields[name] = nil}
     attributes.each {|hsh| hsh.each {|name, value| @fields[name.to_sym] = value}}

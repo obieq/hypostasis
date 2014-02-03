@@ -5,15 +5,15 @@ module Hypostasis::Document
     def save
       generate_id
       self.class.namespace.transact do |tr|
-        tr.set(self.class.namespace.for_document(self), @fields.to_bson)
+        tr.set(self.class.namespace.for_document(self), self.to_bson)
         indexed_fields_to_commit.each {|key| tr.set(key, 'true') }
       end
       self
     end
 
     def destroy
-      self.class.namespace.transact do |tr|
-        tr.clear_range_start_with(self.class.namespace.for_document(self))
+      namespace.transact do |tr|
+        tr.clear_range_start_with(namespace.for_document(self))
       end
     end
 

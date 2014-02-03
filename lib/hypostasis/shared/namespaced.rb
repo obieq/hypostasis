@@ -2,15 +2,15 @@ module Hypostasis::Shared
   module Namespaced
     extend ActiveSupport::Concern
 
-    module ClassMethods
-      def use_namespace(namespace)
-        self.class_eval do
-          class_variable_set(:@@namespace, Hypostasis::Namespace.new(namespace.to_s, detect_data_model))
-        end
-      end
+    included do
+      cattr_accessor :namespace
+    end
 
-      def namespace
-        self.class_eval { class_variable_get(:@@namespace) }
+    module ClassMethods
+      def use_namespace(namespace_name)
+        self.class_eval do
+          class_variable_set :@@namespace, Hypostasis::Namespace.new(namespace_name.to_s, detect_data_model)
+        end
       end
 
       private
