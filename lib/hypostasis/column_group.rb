@@ -13,6 +13,7 @@ module Hypostasis::ColumnGroup
   include Hypostasis::Shared::BelongsTo
   include Hypostasis::Shared::HasOne
   include Hypostasis::Shared::HasMany
+  include Hypostasis::Shared::HABTM
 
   include Hypostasis::ColumnGroup::Persistence
   include Hypostasis::ColumnGroup::Findable

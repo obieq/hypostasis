@@ -5,6 +5,7 @@ require 'hypostasis/shared/indexes'
 require 'hypostasis/shared/belongs_to'
 require 'hypostasis/shared/has_one'
 require 'hypostasis/shared/has_many'
+require 'hypostasis/shared/habtm'
 
 module Hypostasis::Shared
   extend ActiveSupport::Concern
