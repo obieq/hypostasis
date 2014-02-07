@@ -13,9 +13,9 @@ class Hypostasis::Namespace
     @config[:data_model]
   end
 
-  def config
-    @config = (deserialize_messagepack database.get(name), Hash).symbolize_keys
-  end
+  #def config
+  #  @config = (deserialize_messagepack database.get(name), Hash).symbolize_keys
+  #end
 
   def open
     raise Hypostasis::Errors::NonExistentNamespace if database[name].nil?
