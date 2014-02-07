@@ -44,7 +44,7 @@ describe Hypostasis::Namespace do
         subject.set('fixnum', 5)
       end
 
-      it { database.get('keyvalue_space\\' + Hypostasis::Tuple.new('fixnum'.to_s, Fixnum.to_s).to_s).must_equal '5' }
+      it { database.get('keyvalue_space\\fixnum').must_equal 5.to_msgpack }
     end
 
     describe '#get' do
@@ -83,37 +83,38 @@ describe Hypostasis::Namespace do
       describe 'for Date' do
         before do
           @date = Date.today
-          subject.set('date', @date)
+          subject.set('date', @date, Date)
         end
 
-        it { subject.get('date').must_equal @date }
+        it { subject.get('date', Date).must_equal @date }
       end
 
       describe 'for DateTime' do
         before do
           @date = DateTime.now
-          subject.set('datetime', @date)
+          subject.set('datetime', @date, DateTime)
         end
 
-        it { subject.get('datetime').year.must_equal @date.year }
-        it { subject.get('datetime').month.must_equal @date.month }
-        it { subject.get('datetime').day.must_equal @date.day }
-        it { subject.get('datetime').hour.must_equal @date.hour }
-        it { subject.get('datetime').minute.must_equal @date.minute }
-        it { subject.get('datetime').second.must_equal @date.second }
-        it { subject.get('datetime').zone.must_equal @date.zone }
+        it { subject.get('datetime', DateTime).year.must_equal @date.year }
+        it { subject.get('datetime', DateTime).month.must_equal @date.month }
+        it { subject.get('datetime', DateTime).day.must_equal @date.day }
+        it { subject.get('datetime', DateTime).hour.must_equal @date.hour }
+        it { subject.get('datetime', DateTime).minute.must_equal @date.minute }
+        it { subject.get('datetime', DateTime).second.must_equal @date.second }
+        it { subject.get('datetime', DateTime).zone.must_equal @date.zone }
       end
 
       describe 'for Time' do
         before do
           @time = Time.now
-          subject.set('time', @time)
+          subject.set('time', @time, Time)
         end
 
-        it { subject.get('time').hour.must_equal @time.hour }
-        it { subject.get('time').min.must_equal @time.min }
-        it { subject.get('time').sec.must_equal @time.sec }
-        it { subject.get('time').zone.must_equal @time.zone }
+        it { subject.get('time', Time).hour.must_equal @time.hour }
+        it { subject.get('time', Time).min.must_equal @time.min }
+        it { subject.get('time', Time).sec.must_equal @time.sec }
+        it { subject.get('time', Time).zone.must_equal @time.zone }
+
       end
 
       describe 'for Bolean' do
@@ -128,8 +129,7 @@ describe Hypostasis::Namespace do
 
       describe 'for unknown type' do
         before do
-          class Unknown; end
-          database.set('keyvalue_space\\' + Hypostasis::Tuple.new('unknown'.to_s, Unknown.to_s).to_s, '1')
+          database.set('keyvalue_space\\unknown', '\xunknown')
         end
 
         it { lambda { subject.get('unknown') }.must_raise Hypostasis::Errors::UnknownValueType }

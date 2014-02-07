@@ -1,17 +1,22 @@
 require 'date'
 
 module Hypostasis::DataModels::KeyValue
-  include Hypostasis::DataModels::Utilities
+  #include Hypostasis::DataModels::Utilities
 
-  def set(key, value)
-    key_path = "#{name}\\#{Hypostasis::Tuple.new(key.to_s, value.class.to_s).to_s}"
-    database.set(key_path, value.to_s)
+  def set(key, value, klass = nil)
+    value = klass.to_msgpack_type(value) unless klass.nil?
+    database.set("#{name}\\#{key.to_s}", value.to_msgpack)
   end
 
-  def get(key)
-    key_path = "#{name}\\#{Hypostasis::Tuple.new(key.to_s).to_s}"
-    key = database.get_range_start_with(key_path).first.key
-    value = database.get_range_start_with(key_path).first.value
-    reconstitute_value(Hypostasis::Tuple.unpack(key.to_s.split('\\').last), value)
+  def get(key, klass = nil)
+    value = database.get("#{name}\\#{key.to_s}")
+    raise Hypostasis::Errors::KeyNotFound if value.nil?
+    begin
+      value = MessagePack.unpack StringIO.new(value)
+      value = klass.from_msgpack_type(value) unless klass.nil?
+    rescue StandardError
+      raise Hypostasis::Errors::UnknownValueType
+    end
+    value
   end
 end

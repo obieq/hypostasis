@@ -7,6 +7,10 @@ require 'msgpack'
 require 'hypostasis/ext/bson/date'
 require 'hypostasis/ext/bson/date_time'
 
+require 'hypostasis/ext/msgpack/date'
+require 'hypostasis/ext/msgpack/date_time'
+require 'hypostasis/ext/msgpack/time'
+
 require 'hypostasis/version'
 
 require 'hypostasis/errors'
