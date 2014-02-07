@@ -6,7 +6,6 @@ module Hypostasis::Document
   extend ActiveSupport::Concern
 
   include Hypostasis::Shared
-  include Hypostasis::Shared::Utilities
   include Hypostasis::Shared::Namespaced
   include Hypostasis::Shared::Fields
   include Hypostasis::Shared::Indexes

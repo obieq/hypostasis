@@ -1,4 +1,3 @@
-require 'hypostasis/shared/utilities'
 require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
 require 'hypostasis/shared/indexes'
@@ -14,7 +13,7 @@ module Hypostasis::Shared
   def initialize(*attributes)
     self.class.class_variable_get(:@@namespace).open
     @fields = {}
-    self.class.fields.each {|name| @fields[name] = nil}
+    self.class.registered_fields.each {|name, options| @fields[name] = nil}
     attributes.each {|hsh| hsh.each {|name, value| @fields[name.to_sym] = value}}
     self
   end

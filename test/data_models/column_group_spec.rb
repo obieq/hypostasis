@@ -1,7 +1,8 @@
 require 'minitest_helper'
 
 describe Hypostasis::ColumnGroup do
-  let(:subject) { SampleColumn.new(name: 'John', age: 21, dob: Date.today.prev_year(21)) }
+  let(:dob) { Date.today.prev_year(21) }
+  let(:subject) { SampleColumn.new(name: 'John', age: 21, dob: dob) }
 
   before do
     Hypostasis::Connection.create_namespace 'sample_columns', data_model: :column_group
@@ -28,7 +29,7 @@ describe Hypostasis::ColumnGroup do
   it { subject.must_respond_to :save }
 
   describe '#create' do
-    let(:subject) { SampleColumn.create(name: 'John', age: 21, dob: Date.today.prev_year(21)) }
+    let(:subject) { SampleColumn.create(name: 'John', age: 21, dob: dob) }
 
     after do
       subject.destroy
@@ -36,13 +37,13 @@ describe Hypostasis::ColumnGroup do
 
     it { subject.id.wont_be_nil }
     it { database.get(column_path(subject)).must_equal 'true' }
-    it { database.get(field_path(subject, :name, String)).must_equal 'John' }
-    it { database.get(field_path(subject, :age, Fixnum)).must_equal '21' }
-    it { database.get(field_path(subject, :dob, Date)).must_equal Date.today.prev_year(21).to_s }
+    it { database.get(field_path(subject, :name)).must_equal 'John'.to_msgpack }
+    it { database.get(field_path(subject, :age)).must_equal 21.to_msgpack }
+    it { database.get(field_path(subject, :dob)).must_equal Date.to_msgpack_type(dob).to_msgpack }
   end
 
   describe '#save' do
-    let(:subject) { SampleColumn.new(name: 'John', age: 21, dob: Date.today.prev_year(21)) }
+    let(:subject) { SampleColumn.new(name: 'John', age: 21, dob: dob) }
 
     before do
       subject.save
@@ -54,9 +55,9 @@ describe Hypostasis::ColumnGroup do
 
     it { subject.id.wont_be_nil }
     it { database.get(column_path(subject)).must_equal 'true' }
-    it { database.get(field_path(subject, :name, String)).must_equal 'John' }
-    it { database.get(field_path(subject, :age, Fixnum)).must_equal '21' }
-    it { database.get(field_path(subject, :dob, Date)).must_equal Date.today.prev_year(21).to_s }
+    it { database.get(field_path(subject, :name)).must_equal 'John'.to_msgpack }
+    it { database.get(field_path(subject, :age)).must_equal 21.to_msgpack }
+    it { database.get(field_path(subject, :dob)).must_equal Date.to_msgpack_type(dob).to_msgpack }
   end
 
   describe '.find' do
@@ -68,6 +69,9 @@ describe Hypostasis::ColumnGroup do
 
     it { SampleColumn.find(column_id).is_a?(SampleColumn).must_equal true }
     it { SampleColumn.find(column_id).id.must_equal column_id }
+    it { SampleColumn.find(column_id).name.must_equal 'John' }
+    it { SampleColumn.find(column_id).age.must_equal 21 }
+    it { SampleColumn.find(column_id).dob.must_equal dob }
   end
 
   describe 'indexing' do

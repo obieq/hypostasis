@@ -52,29 +52,6 @@ class Hypostasis::Namespace
     Hypostasis::Namespace.new(name, current_config[:data_model])
   end
 
-private
-
-  def self.database
-    Hypostasis::Connection.database
-  end
-
-  def database
-    Hypostasis::Namespace.database
-  end
-
-  def load_data_model
-    case data_model
-      when 'key_value'
-        self.extend Hypostasis::DataModels::KeyValue
-      when 'column_group'
-        self.extend Hypostasis::DataModels::ColumnGroup
-      when 'document'
-        self.extend Hypostasis::DataModels::Document
-      else
-        raise Hypostasis::Errors::UnknownNamespaceDataModel, "#{data_model} unknown"
-    end
-  end
-
   def self.serialize_messagepack(value)
     begin
       serialized_value = value
@@ -104,5 +81,28 @@ private
 
   def deserialize_messagepack(value, klass)
     Hypostasis::Namespace.deserialize_messagepack(value, klass)
+  end
+
+private
+
+  def self.database
+    Hypostasis::Connection.database
+  end
+
+  def database
+    Hypostasis::Namespace.database
+  end
+
+  def load_data_model
+    case data_model
+      when 'key_value'
+        self.extend Hypostasis::DataModels::KeyValue
+      when 'column_group'
+        self.extend Hypostasis::DataModels::ColumnGroup
+      when 'document'
+        self.extend Hypostasis::DataModels::Document
+      else
+        raise Hypostasis::Errors::UnknownNamespaceDataModel, "#{data_model} unknown"
+    end
   end
 end

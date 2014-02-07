@@ -28,18 +28,19 @@ module Hypostasis::ColumnGroup
       private
 
       def reconstitute_column_group(keys)
-        attributes = {}
-        keys.each {|key| attributes.merge(parse_key(key))}
-        document = self.new(attributes)
-        document.set_id(Hypostasis::Tuple.unpack(keys.first.key.split('\\')[1]).to_a[1])
+        reconstituted_attributes = {}
+        keys.each {|key| reconstituted_attributes = parse_key(key.key, key.value, reconstituted_attributes)}
+        document = self.new(reconstituted_attributes)
+        document.set_id(keys.first.key.split('\\')[2])
         document
       end
 
-      def parse_key(key)
-        attribute_tuple = key.key.split('\\')[2]
-        return {} if attribute_tuple.nil?
-        unpacked_key = Hypostasis::Tuple.unpack(attribute_tuple)
-        {unpacked_key.to_a[0].to_sym => reconstitute_value(unpacked_key, key.value)}
+      def parse_key(key, value, reconstituted_attributes = {})
+        attribute_name = key.split('\\').last
+        return {} if attribute_name.nil? || registered_fields[attribute_name.to_sym].nil?
+        reconstituted_value = namespace.deserialize_messagepack(value, registered_fields[attribute_name.to_sym][:type])
+        reconstituted_attributes[attribute_name.to_sym] = reconstituted_value
+        reconstituted_attributes
       end
     end
   end

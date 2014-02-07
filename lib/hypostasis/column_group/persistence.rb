@@ -8,11 +8,13 @@ module Hypostasis::ColumnGroup
         tr.set(self.class.namespace.for_column_group(self), true.to_s)
 
         @fields.each do |field_name, value|
-          tr.set(self.class.namespace.for_field(self, field_name, value.class.to_s), value.to_s)
+          field_key = self.class.namespace.for_field(self, field_name)
+          field_value = self.class.namespace.serialize_messagepack(value)
+          tr.set(field_key, field_value)
         end
 
         indexed_fields_to_commit.each do |key|
-          tr.set(key, 'true')
+          tr.set(key, self.class.namespace.for_column_group(self))
         end
       end
       self
@@ -21,6 +23,7 @@ module Hypostasis::ColumnGroup
     def destroy
       self.class.namespace.transact do |tr|
         tr.clear_range_start_with(self.class.namespace.for_column_group(self))
+        indexed_fields_to_commit.each {|key| tr.clear(key)}
       end
     end
 

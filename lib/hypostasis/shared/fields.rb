@@ -3,7 +3,10 @@ module Hypostasis::Shared
     extend ActiveSupport::Concern
 
     included do
-      cattr_accessor_with_default :fields, {}
+      cattr_accessor :registered_fields
+      self.class_eval <<-EOS
+        @@registered_fields = {}
+      EOS
     end
 
     module ClassMethods
@@ -14,10 +17,10 @@ module Hypostasis::Shared
 
       private
 
-      def register_field(name, options)
-        registered_fields = fields
-        registered_fields.merge(name.to_sym => options)
-        fields = registered_fields
+      def register_field(name, options = {})
+        new_registered_fields = registered_fields
+        new_registered_fields[name.to_sym] = options
+        registered_fields = new_registered_fields
       end
 
       def create_accessors(name, options)

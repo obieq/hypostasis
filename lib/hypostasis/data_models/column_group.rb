@@ -9,10 +9,10 @@ module Hypostasis::DataModels::ColumnGroup
   end
 
   def for_column_group(column_group, id = nil)
-    name.to_s + '\\' + Hypostasis::Tuple.new(get_class_name(column_group), get_object_id(column_group, id)).to_s
+    name.to_s + '\\' + get_class_name(column_group) + '\\' + get_object_id(column_group, id)
   end
 
-  def for_field(document, field, type)
-    for_column_group(document) + '\\' + Hypostasis::Tuple.new(field.to_s, type.to_s).to_s
+  def for_field(document, field_name)
+    for_column_group(document) + '\\' + field_name.to_s
   end
 end

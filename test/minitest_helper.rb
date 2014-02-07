@@ -34,15 +34,11 @@ class Minitest::Spec
 
   def column_path(column_group)
     column_namespace = column_group.class.namespace.to_s
-    column_tuple = Hypostasis::Tuple.new(column_group.class.to_s, column_group.id.to_s).to_s
-    column_namespace + '\\' + column_tuple
+    column_namespace + '\\' + column_group.class.to_s + '\\' + column_group.id.to_s
   end
 
-  def field_path(column_group, name, type)
-    column_namespace = column_group.class.namespace.to_s
-    column_tuple = Hypostasis::Tuple.new(column_group.class.to_s, column_group.id.to_s).to_s
-    field_tuple = Hypostasis::Tuple.new(name.to_s, type.to_s).to_s
-    column_namespace + '\\' + column_tuple + '\\' + field_tuple
+  def field_path(column_group, field_name)
+    column_path(column_group) + '\\' + field_name.to_s
   end
 
   def index_path(klass, field_name, value = nil)

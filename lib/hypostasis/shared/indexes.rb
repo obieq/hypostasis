@@ -2,9 +2,16 @@ module Hypostasis::Shared
   module Indexes
     extend ActiveSupport::Concern
 
+
     included do
-      cattr_accessor_with_default :indexed_fields, []
+      cattr_accessor :indexed_fields
+      self.class_eval <<-EOS
+        @@indexed_fields = []
+      EOS
     end
+    #included do
+    #  cattr_accessor_with_default :indexed_fields, []
+    #end
 
     private
 
