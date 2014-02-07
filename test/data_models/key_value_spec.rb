@@ -1,3 +1,4 @@
+require 'minitest_helper'
 
 describe Hypostasis::DataModels::KeyValue do
   before do
