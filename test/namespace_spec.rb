@@ -7,7 +7,7 @@ describe Hypostasis::Namespace do
   it { subject.name.must_equal 'demonstration' }
 
   it { subject.must_respond_to :data_model }
-  it { subject.must_respond_to :config }
+  #it { subject.must_respond_to :config }
   it { subject.data_model.must_equal 'key_value' }
 
   it { subject.must_respond_to :destroy }
