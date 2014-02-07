@@ -3,20 +3,20 @@ module Hypostasis::Shared
     extend ActiveSupport::Concern
 
     included do
-      cattr_accessor_with_default :fields, []
+      cattr_accessor_with_default :fields, {}
     end
 
     module ClassMethods
       def field(name, options = {})
-        register_field(name.to_sym)
+        register_field(name.to_sym, options)
         create_accessors(name.to_s, options)
       end
 
       private
 
-      def register_field(name)
+      def register_field(name, options)
         registered_fields = fields
-        registered_fields << name.to_sym
+        registered_fields.merge(name.to_sym => options)
         fields = registered_fields
       end
 

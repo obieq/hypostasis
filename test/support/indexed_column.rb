@@ -3,9 +3,9 @@ class IndexedColumn
 
   use_namespace 'indexed_columns'
 
-  field :name
-  field :age
-  field :dob
+  field :name,  type: String
+  field :age,   type: Integer
+  field :dob,   type: Date
 
   index :name
   index :age

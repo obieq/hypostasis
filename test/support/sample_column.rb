@@ -3,7 +3,7 @@ class SampleColumn
 
   use_namespace 'sample_columns'
 
-  field :name
-  field :age
-  field :dob
+  field :name,  type: String
+  field :age,   type: Integer
+  field :dob,   type: Date
 end
