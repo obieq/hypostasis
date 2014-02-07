@@ -83,7 +83,7 @@ describe Hypostasis::Namespace do
       describe 'for Date' do
         before do
           @date = Date.today
-          subject.set('date', @date, Date)
+          subject.set('date', @date)
         end
 
         it { subject.get('date', Date).must_equal @date }
@@ -92,7 +92,7 @@ describe Hypostasis::Namespace do
       describe 'for DateTime' do
         before do
           @date = DateTime.now
-          subject.set('datetime', @date, DateTime)
+          subject.set('datetime', @date)
         end
 
         it { subject.get('datetime', DateTime).year.must_equal @date.year }
@@ -107,7 +107,7 @@ describe Hypostasis::Namespace do
       describe 'for Time' do
         before do
           @time = Time.now
-          subject.set('time', @time, Time)
+          subject.set('time', @time)
         end
 
         it { subject.get('time', Time).hour.must_equal @time.hour }
