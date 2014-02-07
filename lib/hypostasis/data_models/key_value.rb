@@ -10,10 +10,6 @@ module Hypostasis::DataModels::KeyValue
   def get(key, klass = nil)
     raw_value = database.get("#{name}\\#{key.to_s}")
     raise Hypostasis::Errors::KeyNotFound if raw_value.nil?
-    begin
-      deserialize_messagepack MessagePack.unpack(StringIO.new(raw_value)), klass
-    rescue StandardError
-      raise Hypostasis::Errors::UnknownValueType
-    end
+    deserialize_messagepack raw_value, klass
   end
 end
