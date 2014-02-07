@@ -11,7 +11,6 @@ describe Hypostasis::DataModels::KeyValue do
 
   let(:subject) { Hypostasis::Namespace.create('keyvalue_space', { data_model: :key_value }) }
 
-  it { database.get('keyvalue_space\\' + Hypostasis::Tuple.new(['config','data_model']).to_s).must_equal 'key_value' }
   it { subject.must_respond_to :get }
   it { subject.must_respond_to :set }
 

@@ -7,7 +7,8 @@ describe Hypostasis::Namespace do
   it { subject.name.must_equal 'demonstration' }
 
   it { subject.must_respond_to :data_model }
-  it { subject.data_model.must_equal :key_value }
+  it { subject.must_respond_to :config }
+  it { subject.data_model.must_equal 'key_value' }
 
   it { subject.must_respond_to :destroy }
 
@@ -18,9 +19,9 @@ describe Hypostasis::Namespace do
 
     it {
       ns = Hypostasis::Namespace.create('destroy_demo')
-      database.get('destroy_demo').must_equal 'true'
+      database.get('destroy_demo').wont_be_nil
       ns.destroy
-      database.get('destroy_demo').nil?.must_equal true
+      database.get('destroy_demo').must_be_nil
     }
   end
 
@@ -35,7 +36,7 @@ describe Hypostasis::Namespace do
 
     let(:subject) { Hypostasis::Namespace.create('column_space', { data_model: :column_group }) }
 
-    it { database.get('column_space\\' + Hypostasis::Tuple.new(['config','data_model']).to_s).must_equal 'column_group' }
+    it { MessagePack.unpack(StringIO.new(database.get('column_space'))).must_equal({'data_model' => 'column_group'}) }
   end
 
   describe 'for an unknown namespace type' do
@@ -45,8 +46,7 @@ describe Hypostasis::Namespace do
 
     it { lambda { Hypostasis::Namespace.create('unknown_space', { data_model: :unknown }) }.must_raise Hypostasis::Errors::UnknownNamespaceDataModel }
     it {
-      database.set('unknown_space', 'true')
-      database.set('unknown_space\\' + Hypostasis::Tuple.new(['config','data_model']).to_s, 'unknown')
+      database.set('unknown_space', { data_model: :unknown }.to_msgpack)
 
       lambda {
         Hypostasis::Namespace.open('unknown_space')

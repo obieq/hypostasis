@@ -36,27 +36,4 @@ module Hypostasis::DataModels::Utilities
         raise Hypostasis::Errors::UnknownValueType
     end
   end
-
-  def serialize_messagepack(value)
-    begin
-      serialized_value = value
-      serialized_value = value.class.to_msgpack_type(value) if value.class.respond_to?(:to_msgpack_type)
-      serialized_value.to_msgpack
-    rescue StandardError
-      raise Hypostasis::Errors::UnknownValueType, 'value can not be serialized to MessagePack'
-    end
-  end
-
-  def deserialize_messagepack(value, klass)
-    begin
-      msgpack_value = MessagePack.unpack(StringIO.new(value))
-      if klass.respond_to?(:from_msgpack_type)
-        klass.from_msgpack_type(msgpack_value)
-      else
-        msgpack_value
-      end
-    rescue StandardError
-      raise Hypostasis::Errors::UnknownValueType, 'value can not be deserialized from MessagePack'
-    end
-  end
 end
