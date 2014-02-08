@@ -12,10 +12,4 @@ module Hypostasis::DataModels::KeyValue
     raise Hypostasis::Errors::KeyNotFound if raw_value.nil?
     deserialize_messagepack raw_value, klass
   end
-
-  private
-
-  def key_path_for(key)
-    [directory.key, key].join('\\')
-  end
 end

@@ -76,6 +76,10 @@ private
     @directory ||= FDB.directory.open(database, name)
   end
 
+  def key_path_for(key)
+    [directory.key, key].join('\\')
+  end
+
   def self.database
     Hypostasis::Connection.database
   end
