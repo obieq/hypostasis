@@ -1,7 +1,7 @@
 require 'singleton'
 require 'fdb'
 
-FDB.api_version 100
+FDB.api_version 200
 
 class Hypostasis::Connection
   include ::Singleton

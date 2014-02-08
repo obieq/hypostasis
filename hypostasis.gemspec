@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   # Used to load compatible gems for JRuby
   spec.extensions    = ['ext/extconf.rb']
 
-  spec.add_dependency 'fdb', '~> 1.0.1'
+  spec.add_dependency 'fdb', '~> 2.0.0'
   spec.add_dependency 'activesupport', '>= 3.2.0'
   spec.add_dependency 'bson', '~> 2.2'
 
