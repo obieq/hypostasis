@@ -36,7 +36,7 @@ matrix:
     - rvm: jruby-19mode
     - rvm: rbx
 before_install:
-  - wget https://foundationdb.com/downloads/I_accept_the_FoundationDB_Community_License_Agreement/1.0.1/foundationdb-clients_1.0.1-1_amd64.deb
-  - wget https://foundationdb.com/downloads/I_accept_the_FoundationDB_Community_License_Agreement/1.0.1/foundationdb-server_1.0.1-1_amd64.deb
-  - sudo dpkg -i foundationdb-clients_1.0.1-1_amd64.deb
-  - sudo dpkg -i foundationdb-server_1.0.1-1_amd64.deb
+  - wget https://foundationdb.com/downloads/I_accept_the_FoundationDB_Community_License_Agreement/2.0.0/foundationdb-clients_2.0.0-1_amd64.deb
+  - wget https://foundationdb.com/downloads/I_accept_the_FoundationDB_Community_License_Agreement/2.0.0/foundationdb-server_2.0.0-1_amd64.deb
+  - sudo dpkg -i foundationdb-clients_2.0.0-1_amd64.deb
+  - sudo dpkg -i foundationdb-server_2.0.0-1_amd64.deb
