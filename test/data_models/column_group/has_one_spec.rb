@@ -24,6 +24,7 @@ end
 
 describe 'ColumnGroup has_one Relationship' do
   before do
+    FDB.directory.remove_if_exists(database, 'hasone_columns')
     Hypostasis::Connection.create_namespace 'hasone_columns', data_model: :column_group
     @owner = HasOneOwnerColumnGroup.create(name: 'John', age: '25')
     @child = HasOneChildColumnGroup.create(name: 'James', age: '6', has_one_owner_column_group_id: @owner.id)

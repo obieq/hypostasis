@@ -2,6 +2,7 @@ require 'minitest_helper'
 
 describe 'Hypostasis::Document indexing' do
   before do
+    FDB.directory.remove_if_exists(database, 'indexed_documents')
     Hypostasis::Connection.create_namespace 'indexed_documents', data_model: :document
 
     IndexedDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21))

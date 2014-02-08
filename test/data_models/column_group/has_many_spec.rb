@@ -24,6 +24,7 @@ end
 
 describe 'ColumnGroup has_many Relationship' do
   before do
+    FDB.directory.remove_if_exists(database, 'hasmany_columns')
     Hypostasis::Connection.create_namespace 'hasmany_columns', data_model: :column_group
     @owner = HasManyOwnerColumnGroup.create(name: 'John', age: '25')
     @children = []

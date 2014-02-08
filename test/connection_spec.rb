@@ -5,6 +5,8 @@ describe Hypostasis::Connection do
 
   describe '#create_namespace' do
     before do
+      FDB.directory.remove_if_exists(database, 'already_created')
+      FDB.directory.remove_if_exists(database, 'newly_created')
       subject.destroy_namespace('already_created')
       subject.create_namespace('already_created')
     end
@@ -20,6 +22,7 @@ describe Hypostasis::Connection do
 
   describe '#open_namespace' do
     before do
+      FDB.directory.remove_if_exists(database, 'already_created')
       subject.create_namespace('already_created')
     end
 
@@ -32,6 +35,7 @@ describe Hypostasis::Connection do
 
   describe '#destroy_namespace' do
     before do
+      FDB.directory.remove_if_exists(database, 'already_created')
       subject.create_namespace('already_created')
     end
 

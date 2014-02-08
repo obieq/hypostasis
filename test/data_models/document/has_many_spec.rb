@@ -24,6 +24,7 @@ end
 
 describe 'Document has_many Relationship' do
   before do
+    FDB.directory.remove_if_exists(database, 'hasmany_docs')
     Hypostasis::Connection.create_namespace 'hasmany_docs', data_model: :document
     @owner = HasManyOwnerDocument.create(name: 'John', age: '25')
     @children = []

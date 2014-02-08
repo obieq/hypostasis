@@ -5,6 +5,8 @@ describe Hypostasis::ColumnGroup do
   let(:subject) { SampleColumn.new(name: 'John', age: 21, dob: dob) }
 
   before do
+    FDB.directory.remove_if_exists(database, 'sample_columns')
+    FDB.directory.remove_if_exists(database, 'indexed_columns')
     Hypostasis::Connection.create_namespace 'sample_columns', data_model: :column_group
     Hypostasis::Connection.create_namespace 'indexed_columns', data_model: :column_group
   end

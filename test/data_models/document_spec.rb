@@ -4,6 +4,8 @@ describe Hypostasis::Document do
   let(:subject) { SampleDocument.new(name: 'John', age: 21, dob: Date.today.prev_year(21)) }
 
   before do
+    FDB.directory.remove_if_exists(database, 'sample_documents')
+    FDB.directory.remove_if_exists(database, 'indexed_documents')
     Hypostasis::Connection.create_namespace 'sample_documents', data_model: :document
     Hypostasis::Connection.create_namespace 'indexed_documents', data_model: :document
   end
