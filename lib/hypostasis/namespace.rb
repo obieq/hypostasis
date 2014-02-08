@@ -1,5 +1,5 @@
 class Hypostasis::Namespace
-  attr_reader :name
+  attr_reader :name, :config
 
   SUPPORTED_DATA_MODELS = [:column_group, :key_value, :document]
 
@@ -71,6 +71,10 @@ class Hypostasis::Namespace
   end
 
 private
+
+  def directory
+    @directory ||= FDB.directory.open(database, name)
+  end
 
   def self.database
     Hypostasis::Connection.database
