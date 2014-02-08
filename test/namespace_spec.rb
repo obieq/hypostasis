@@ -3,26 +3,54 @@ require 'minitest_helper'
 describe Hypostasis::Namespace do
   let(:subject) { Hypostasis::Namespace.new('demonstration') }
 
+  it { Hypostasis::Namespace.must_respond_to :create }
+
   it { subject.must_respond_to :name }
   it { subject.name.must_equal 'demonstration' }
 
   it { subject.must_respond_to :data_model }
-  #it { subject.must_respond_to :config }
   it { subject.data_model.must_equal 'key_value' }
 
   it { subject.must_respond_to :destroy }
 
-  describe '#destroy' do
+  describe '#create' do
+    let(:subject) { Hypostasis::Namespace.create('create_demo') }
+
     before do
-      Hypostasis::Connection.destroy_namespace('destroy_demo')
+      FDB.directory.remove_if_exists(database, 'create_demo')
     end
 
-    it {
-      ns = Hypostasis::Namespace.create('destroy_demo')
-      database.get('destroy_demo').wont_be_nil
-      ns.destroy
-      database.get('destroy_demo').must_be_nil
-    }
+    after do
+      subject.destroy
+    end
+
+    it { subject.must_be_kind_of Hypostasis::Namespace }
+    it { subject; FDB.directory.exists?(database, 'create_demo').must_equal true }
+    it { subject; FDB.directory.open(database, 'create_demo').must_be_kind_of FDB::DirectorySubspace }
+  end
+
+  describe '#destroy' do
+    let(:subject) { Hypostasis::Namespace.create('destroy_demo') }
+
+    before do
+      subject
+    end
+
+    after do
+      FDB.directory.remove_if_exists(database, 'destroy_demo')
+    end
+
+    it do
+      FDB.directory.exists?(database, 'destroy_demo').must_equal true
+      subject.destroy
+      FDB.directory.exists?(database, 'destroy_demo').must_equal false
+    end
+
+    it do
+      FDB.directory.open(database, 'destroy_demo').must_be_kind_of FDB::DirectorySubspace
+      subject.destroy
+      lambda { FDB.directory.open(database, 'destroy_demo') }.must_raise ArgumentError
+    end
   end
 
   describe 'for a ColumnGroup namespace' do
@@ -31,26 +59,27 @@ describe Hypostasis::Namespace do
     end
 
     after do
-      subject.destroy
+      FDB.directory.remove_if_exists(database, 'column_space')
     end
 
     let(:subject) { Hypostasis::Namespace.create('column_space', { data_model: :column_group }) }
+    let(:directory) { FDB.directory.open(database, 'column_space') }
 
-    it { MessagePack.unpack(StringIO.new(database.get('column_space'))).must_equal({'data_model' => 'column_group'}) }
+    it { MessagePack.unpack(StringIO.new(database.get(directory['hypostasis']['config']))).must_equal({'data_model' => 'column_group'}) }
   end
 
   describe 'for an unknown namespace type' do
-    after do
-      Hypostasis::Connection.destroy_namespace('unknown_space')
+    before do
+      database.set(directory['hypostasis']['config'], {data_model: :unknown}.to_msgpack)
     end
 
-    it { lambda { Hypostasis::Namespace.create('unknown_space', { data_model: :unknown }) }.must_raise Hypostasis::Errors::UnknownNamespaceDataModel }
-    it {
-      database.set('unknown_space', { data_model: :unknown }.to_msgpack)
+    after do
+      FDB.directory.remove_if_exists(database, 'unknown_space')
+    end
 
-      lambda {
-        Hypostasis::Namespace.open('unknown_space')
-      }.must_raise Hypostasis::Errors::UnknownNamespaceDataModel
-    }
+    let(:directory) { FDB.directory.create(database, 'unknown_space') }
+
+    it { lambda { Hypostasis::Namespace.create('unknown_space', { data_model: :unknown }) }.must_raise Hypostasis::Errors::UnknownNamespaceDataModel }
+    it { lambda { Hypostasis::Namespace.open('unknown_space') }.must_raise Hypostasis::Errors::UnknownNamespaceDataModel }
   end
 end
