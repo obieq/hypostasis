@@ -5,7 +5,8 @@ module Hypostasis::ColumnGroup
     module ClassMethods
       def find(id)
         document_keys = namespace.transact do |tr|
-          tr.get_range_start_with(namespace.for_column_group(self, id), {:streaming_mode => :want_all}).to_a
+          range = namespace.for_column_group(self, id).range
+          tr.get_range(range[0], range[1], {:streaming_mode => :want_all}).to_a
         end
         raise Hypostasis::Errors::ColumnGroupNotFound if document_keys.empty?
         reconstitute_column_group(document_keys)
@@ -27,16 +28,16 @@ module Hypostasis::ColumnGroup
 
       private
 
-      def reconstitute_column_group(keys)
+      def reconstitute_column_group(keys, id = nil)
         reconstituted_attributes = {}
         keys.each {|key| reconstituted_attributes = parse_key(key.key, key.value, reconstituted_attributes)}
         document = self.new(reconstituted_attributes)
-        document.set_id(keys.first.key.split('\\')[2])
+        document.set_id(namespace.directory.unpack(keys.first.key)[1])
         document
       end
 
       def parse_key(key, value, reconstituted_attributes = {})
-        attribute_name = key.split('\\').last
+        attribute_name = namespace.directory.unpack(key).last
         return {} if attribute_name.nil? || registered_fields[attribute_name.to_sym].nil?
         reconstituted_value = namespace.deserialize_messagepack(value, registered_fields[attribute_name.to_sym][:type])
         reconstituted_attributes[attribute_name.to_sym] = reconstituted_value

@@ -14,7 +14,7 @@ module Hypostasis::ColumnGroup
         end
 
         indexed_fields_to_commit.each do |key|
-          tr.set(key, self.class.namespace.for_column_group(self))
+          tr.set(key, self.class.namespace.for_column_group(self).key)
         end
       end
       self
