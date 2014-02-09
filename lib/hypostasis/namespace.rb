@@ -1,15 +1,23 @@
 class Hypostasis::Namespace
-  attr_reader :name, :config
+  attr_reader :name, :config, :directory
 
   SUPPORTED_DATA_MODELS = [:column_group, :key_value, :document]
 
   def initialize(namespace_name, namespace_data_model = :key_value)
     @name = namespace_name.to_s
-    @config = {
-        data_model: namespace_data_model.to_s
-    }
+    @config = { data_model: namespace_data_model.to_s }
+    directory = FDB.directory.open(database, @name)
+    raw_config_value = database.get(directory['hypostasis']['config'])
+    raise Hypostasis::Errors::CanNotReadNamespaceConfig if raw_config_value.nil?
+    retrieved_config = deserialize_messagepack(raw_config_value, Hash).symbolize_keys
+    raise Hypostasis::Errors::UnknownNamespaceDataModel unless SUPPORTED_DATA_MODELS.include?(retrieved_config[:data_model].to_sym)
+    raise Hypostasis::Errors::NamespaceDataModelMismatch unless retrieved_config[:data_model] == @config[:data_model]
+    @config.merge!(retrieved_config)
+    @directory = directory
     load_data_model
+    self
   end
+  self.singleton_class.send(:alias_method, :open, :new)
 
   def data_model
     @config[:data_model]
@@ -31,13 +39,13 @@ class Hypostasis::Namespace
     Hypostasis::Namespace.new(name, merged_options[:data_model])
   end
 
-  def self.open(name)
-    directory = FDB.directory.open(database, name.to_s)
-    raw_config_value = database.get(directory['hypostasis']['config'])
-    raise Hypostasis::Errors::CanNotReadNamespaceConfig if raw_config_value.nil?
-    current_config = deserialize_messagepack(raw_config_value, Hash).symbolize_keys
-    Hypostasis::Namespace.new(name, current_config[:data_model])
-  end
+  #def self.open(name)
+  #  directory = FDB.directory.open(database, name.to_s)
+  #  raw_config_value = database.get(directory['hypostasis']['config'])
+  #  raise Hypostasis::Errors::CanNotReadNamespaceConfig if raw_config_value.nil?
+  #  current_config = deserialize_messagepack(raw_config_value, Hash).symbolize_keys
+  #  Hypostasis::Namespace.new(name, current_config[:data_model])
+  #end
 
   def self.serialize_messagepack(value)
     begin
@@ -72,12 +80,8 @@ class Hypostasis::Namespace
 
 private
 
-  def directory
-    @directory ||= FDB.directory.open(database, name)
-  end
-
   def key_path_for(key)
-    [directory.key, key].join('\\')
+    directory[key.to_s]
   end
 
   def self.database

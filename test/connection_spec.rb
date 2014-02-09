@@ -17,7 +17,7 @@ describe Hypostasis::Connection do
     end
 
     it { subject.create_namespace('newly_created').is_a?(Hypostasis::Namespace).must_equal true }
-    it { lambda { subject.create_namespace('already_created') }.must_raise Hypostasis::Errors::NamespaceAlreadyCreated }
+    it { lambda { subject.create_namespace('already_created') }.must_raise ArgumentError }
   end
 
   describe '#open_namespace' do

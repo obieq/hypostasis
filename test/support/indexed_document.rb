@@ -1,3 +1,6 @@
+FDB.directory.remove_if_exists(FDB.open, 'indexed_documents')
+Hypostasis::Connection.create_namespace 'indexed_documents', data_model: :document
+
 class IndexedDocument
   include Hypostasis::Document
 

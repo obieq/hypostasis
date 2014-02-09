@@ -21,7 +21,7 @@ describe Hypostasis::DataModels::KeyValue do
       subject.set('fixnum', 5)
     end
 
-    it { database.get(directory.key + '\\fixnum').must_equal 5.to_msgpack }
+    it { database.get(directory['fixnum']).must_equal 5.to_msgpack }
   end
 
   describe '#get' do
@@ -107,7 +107,7 @@ describe Hypostasis::DataModels::KeyValue do
     describe 'for unknown type' do
       before do
         class Unknown; end
-        database.set(directory.key + '\\unknown', '\xunknown')
+        database.set(directory['unknown'], '\xunknown')
       end
 
       it { lambda { subject.set('unknown', Unknown.new) }.must_raise Hypostasis::Errors::UnknownValueType }

@@ -1,5 +1,8 @@
 require 'minitest_helper'
 
+FDB.directory.remove_if_exists(FDB.open, 'hasone_docs')
+Hypostasis::Connection.create_namespace 'hasone_docs', data_model: :document
+
 class HasOneOwnerDocument
   include Hypostasis::Document
 

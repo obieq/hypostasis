@@ -1,7 +1,15 @@
 require 'minitest_helper'
 
 describe Hypostasis::Namespace do
-  let(:subject) { Hypostasis::Namespace.new('demonstration') }
+  let(:subject) { Hypostasis::Namespace.create('demonstration') }
+
+  before do
+    FDB.directory.remove_if_exists(database, 'demonstration')
+  end
+
+  after do
+    FDB.directory.remove_if_exists(database, 'demonstration')
+  end
 
   it { Hypostasis::Namespace.must_respond_to :create }
 

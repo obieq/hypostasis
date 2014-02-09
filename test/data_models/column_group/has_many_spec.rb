@@ -1,5 +1,8 @@
 require 'minitest_helper'
 
+FDB.directory.remove_if_exists(FDB.open, 'hasmany_columns')
+Hypostasis::Connection.create_namespace 'hasmany_columns', data_model: :column_group
+
 class HasManyOwnerColumnGroup
   include Hypostasis::ColumnGroup
 
