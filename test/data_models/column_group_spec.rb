@@ -76,23 +76,6 @@ describe Hypostasis::ColumnGroup do
     it { SampleColumn.find(column_id).dob.must_equal dob }
   end
 
-  describe 'indexing' do
-    before do
-      IndexedColumn.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
-      IndexedColumn.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
-      IndexedColumn.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
-      IndexedColumn.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
-    end
-
-    it { database.get_range_start_with(index_path(IndexedColumn, :name)).size.must_equal 4 }
-    it { database.get_range_start_with(index_path(IndexedColumn, :age)).size.must_equal 4 }
-
-    it { database.get_range_start_with(index_path(IndexedColumn, :name, 'John')).size.must_equal 2 }
-    it { database.get_range_start_with(index_path(IndexedColumn, :name, 'Jane')).size.must_equal 1 }
-
-    it { database.get_range_start_with(index_path(IndexedColumn, :age, 21)).size.must_equal 2 }
-  end
-
   describe '.find_where' do
     before do
       IndexedColumn.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
