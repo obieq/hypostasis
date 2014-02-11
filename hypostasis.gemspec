@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = %w{lib}
 
   # Used to load compatible gems for JRuby
-  spec.extensions    = ['ext/extconf.rb']
+  spec.extensions    = ['ext/Rakefile']
 
   spec.add_dependency 'fdb', '~> 2.0.0'
   spec.add_dependency 'activesupport', '>= 3.2.0'
