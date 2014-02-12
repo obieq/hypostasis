@@ -14,19 +14,36 @@ describe Hypostasis::DataModels::ColumnGroup do
   end
 
   describe 'indexing' do
-    before do
-      IndexedColumn.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
-      IndexedColumn.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
-      IndexedColumn.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
-      IndexedColumn.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
+    let(:directory) { IndexedColumn.namespace.indexes_directory }
+
+    def get_range_for_column(field_name, value = nil)
+      if value.nil?
+        range = directory[IndexedColumn.to_s][field_name.to_s].range
+      else
+        range = directory[IndexedColumn.to_s][field_name.to_s][value.to_msgpack].range
+      end
+
+      database.get_range(range[0], range[1])
     end
 
-    it { database.get_range_start_with(index_path(IndexedColumn, :name)).size.must_equal 4 }
-    it { database.get_range_start_with(index_path(IndexedColumn, :age)).size.must_equal 4 }
+    before do
+      @indexed_columns = []
+      @indexed_columns << IndexedColumn.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
+      @indexed_columns << IndexedColumn.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
+      @indexed_columns << IndexedColumn.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
+      @indexed_columns << IndexedColumn.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
+    end
 
-    it { database.get_range_start_with(index_path(IndexedColumn, :name, 'John')).size.must_equal 2 }
-    it { database.get_range_start_with(index_path(IndexedColumn, :name, 'Jane')).size.must_equal 1 }
+    after do
+      @indexed_columns.each {|ic| ic.destroy}
+    end
 
-    it { database.get_range_start_with(index_path(IndexedColumn, :age, 21)).size.must_equal 2 }
+    it { get_range_for_column(:name).size.must_equal 4 }
+    it { get_range_for_column(:age).size.must_equal 4 }
+
+    it { get_range_for_column(:name, 'John').size.must_equal 2 }
+    it { get_range_for_column(:name, 'Jane').size.must_equal 1 }
+
+    it { get_range_for_column(:age, 21).size.must_equal 2 }
   end
 end

@@ -1,5 +1,5 @@
 class Hypostasis::Namespace
-  attr_reader :name, :config, :directory, :data_directory
+  attr_reader :name, :config, :directory, :data_directory, :indexes_directory
 
   SUPPORTED_DATA_MODELS = [:column_group, :key_value, :document]
 

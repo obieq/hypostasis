@@ -16,11 +16,11 @@ module Hypostasis::ColumnGroup
         results = []
         namespace.transact do |tr|
           field_value_pairs.each do |field, value|
-            results << tr.get_range_start_with(namespace.for_index(self, field, value), {:streaming_mode => :want_all}).to_a
+            range = namespace.indexes_directory[self.to_s][field.to_s][namespace.serialize_messagepack(value)].range
+            results += tr.get_range(range[0], range[1]).to_a
           end
         end
-        results.flatten!
-        results.collect! {|result| Hypostasis::Tuple.unpack(result.key.split('\\').last).to_a.last }.compact!
+        results.collect! {|result| namespace.indexes_directory.unpack(result.key).last }.compact!
         results.select! {|e| results.count(e) == field_value_pairs.size}
         results.uniq!
         results.collect! {|result| find(result) }

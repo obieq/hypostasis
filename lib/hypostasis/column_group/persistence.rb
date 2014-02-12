@@ -5,7 +5,6 @@ module Hypostasis::ColumnGroup
     def save
       generate_id
       self.class.namespace.transact do |tr|
-        #tr.set(self.class.namespace.for_column_group(self), true.to_s)
         @fields.each do |field_name, value|
           field_key = self.class.namespace.data_directory[self.class.to_s][self.id][field_name.to_s]
           field_value = self.class.namespace.serialize_messagepack(value)
@@ -13,7 +12,7 @@ module Hypostasis::ColumnGroup
         end
 
         indexed_fields_to_commit.each do |key|
-          tr.set(key, self.class.namespace.for_column_group(self).key)
+          tr.set(key, self.class.namespace.data_directory[self.class.to_s][self.id].key)
         end
       end
       self
@@ -23,7 +22,6 @@ module Hypostasis::ColumnGroup
       range = self.class.namespace.data_directory[self.class.to_s][self.id].range
       self.class.namespace.transact do |tr|
         tr.clear_range(range[0], range[1])
-        #tr.clear_range_start_with(self.class.namespace.for_column_group(self))
         indexed_fields_to_commit.each {|key| tr.clear(key)}
       end
     end

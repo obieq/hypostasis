@@ -41,11 +41,6 @@ describe Hypostasis::ColumnGroup do
 
     it { subject.id.wont_be_nil }
 
-    #it { database.get(column_path(subject)).must_equal 'true' }
-    #it { database.get(field_path(subject, :name)).must_equal 'John'.to_msgpack }
-    #it { database.get(field_path(subject, :age)).must_equal 21.to_msgpack }
-    #it { database.get(field_path(subject, :dob)).must_equal Date.to_msgpack_type(dob).to_msgpack }
-
     it { database.get(directory[SampleColumn.to_s][subject.id][:name.to_s]).must_equal 'John'.to_msgpack }
     it { database.get(directory[SampleColumn.to_s][subject.id][:age.to_s]).must_equal 21.to_msgpack }
     it { database.get(directory[SampleColumn.to_s][subject.id][:dob.to_s]).must_equal Date.to_msgpack_type(dob).to_msgpack }
@@ -63,11 +58,6 @@ describe Hypostasis::ColumnGroup do
     end
 
     it { subject.id.wont_be_nil }
-
-    #it { database.get(column_path(subject)).must_equal 'true' }
-    #it { database.get(field_path(subject, :name)).must_equal 'John'.to_msgpack }
-    #it { database.get(field_path(subject, :age)).must_equal 21.to_msgpack }
-    #it { database.get(field_path(subject, :dob)).must_equal Date.to_msgpack_type(dob).to_msgpack }
 
     it { database.get(directory[SampleColumn.to_s][subject.id][:name.to_s]).must_equal 'John'.to_msgpack }
     it { database.get(directory[SampleColumn.to_s][subject.id][:age.to_s]).must_equal 21.to_msgpack }
@@ -90,10 +80,15 @@ describe Hypostasis::ColumnGroup do
 
   describe '.find_where' do
     before do
-      IndexedColumn.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
-      IndexedColumn.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
-      IndexedColumn.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
-      IndexedColumn.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
+      @indexed_columns = []
+      @indexed_columns << IndexedColumn.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
+      @indexed_columns << IndexedColumn.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
+      @indexed_columns << IndexedColumn.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
+      @indexed_columns << IndexedColumn.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
+    end
+
+    after do
+      @indexed_columns.each {|ic| ic.destroy}
     end
 
     it { IndexedColumn.find_where(name: 'John').size.must_equal 2 }
