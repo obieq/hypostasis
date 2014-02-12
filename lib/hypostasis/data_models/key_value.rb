@@ -4,12 +4,14 @@ module Hypostasis::DataModels::KeyValue
   include Hypostasis::DataModels::Utilities
 
   def set(key, value)
-    database.set(key_path_for(key.to_s), serialize_messagepack(value))
+    database.transact do |tr|
+      tr[data_directory[key.to_s]] = serialize_messagepack(value)
+    end
   end
 
   def get(key, klass = nil)
-    raw_value = database.get(key_path_for(key.to_s))
-    raise Hypostasis::Errors::KeyNotFound if raw_value.nil?
-    deserialize_messagepack raw_value, klass
+    raise Hypostasis::Errors::KeyNotFound if data_directory.contains?(key.to_s)
+    raw_value = database.get(data_directory[key.to_s])
+    deserialize_messagepack(raw_value, klass)
   end
 end

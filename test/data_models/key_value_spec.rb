@@ -1,17 +1,16 @@
 require 'minitest_helper'
 
 describe Hypostasis::DataModels::KeyValue do
+  let(:subject) { Hypostasis::Namespace.create('keyvalue_space', { data_model: :key_value }) }
+  let(:directory) { FDB.directory.open(database, %w{keyvalue_space data}) }
+
   before do
-    FDB.directory.remove_if_exists(database, 'keyvalue_space')
     subject
   end
 
   after do
-    subject.destroy
+    FDB.directory.remove_if_exists(database, %w{keyvalue_space})
   end
-
-  let(:subject) { Hypostasis::Namespace.create('keyvalue_space', { data_model: :key_value }) }
-  let(:directory) { FDB.directory.open(database, 'keyvalue_space') }
 
   it { subject.must_respond_to :get }
   it { subject.must_respond_to :set }
