@@ -39,14 +39,6 @@ module Hypostasis::ColumnGroup
         document.set_id(namespace.data_directory.unpack(keys.first.key)[1])
         document
       end
-
-      #def parse_key(key, value, reconstituted_attributes = {})
-      #  attribute_name = namespace.directory.unpack(key).last
-      #  return {} if attribute_name.nil? || registered_fields[attribute_name.to_sym].nil?
-      #  reconstituted_value = namespace.deserialize_messagepack(value, registered_fields[attribute_name.to_sym][:type])
-      #  reconstituted_attributes[attribute_name.to_sym] = reconstituted_value
-      #  reconstituted_attributes
-      #end
     end
   end
 end
