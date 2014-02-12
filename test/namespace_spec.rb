@@ -21,6 +21,9 @@ describe Hypostasis::Namespace do
 
   it { subject.must_respond_to :destroy }
 
+  it { subject.must_respond_to :config }
+  it { subject.config.must_be_kind_of Hypostasis::NamespaceConfig }
+
   it { FDB.directory.exists?(database, %w{demonstration}).must_equal true }
   it { FDB.directory.exists?(database, %w{demonstration config}).must_equal true }
   it { FDB.directory.exists?(database, %w{demonstration indexes}).must_equal true }
@@ -59,7 +62,7 @@ describe Hypostasis::Namespace do
 
   describe 'for an unknown namespace type' do
     before do
-      database.set(directory['hypostasis']['config'], {data_model: :unknown}.to_msgpack)
+      database.set(directory.create_or_open(database, %w{config})['data_model'], 'unknown'.to_msgpack)
     end
 
     after do

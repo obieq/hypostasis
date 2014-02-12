@@ -5,18 +5,8 @@ class Hypostasis::Namespace
 
   def initialize(namespace_name, namespace_data_model = :key_value)
     @name = namespace_name.to_s
-    @config = { data_model: namespace_data_model.to_s }
-    directory = FDB.directory.open(database, [@name])
-    raw_config_value = database.get(directory['hypostasis']['config'])
-    raise Hypostasis::Errors::CanNotReadNamespaceConfig if raw_config_value.nil?
-    retrieved_config = deserialize_messagepack(raw_config_value, Hash).symbolize_keys
-    raise Hypostasis::Errors::UnknownNamespaceDataModel unless SUPPORTED_DATA_MODELS.include?(retrieved_config[:data_model].to_sym)
-    raise Hypostasis::Errors::NamespaceDataModelMismatch unless retrieved_config[:data_model] == @config[:data_model]
-    @directory = directory
-    @config_directory = @directory.create_or_open(database, %w{config})
-    @indexes_directory = @directory.create_or_open(database, %w{indexes})
-    @data_directory = @directory.create_or_open(database, %w{data})
-    @config.merge!(retrieved_config)
+    setup_directories
+    setup_configuration(namespace_data_model)
     load_data_model
     self
   end
@@ -85,6 +75,17 @@ private
 
   def database
     Hypostasis::Namespace.database
+  end
+
+  def setup_directories
+    @directory = FDB.directory.open(database, [@name])
+    @config_directory = @directory.create_or_open(database, %w{config})
+    @indexes_directory = @directory.create_or_open(database, %w{indexes})
+    @data_directory = @directory.create_or_open(database, %w{data})
+  end
+
+  def setup_configuration(namespace_data_model)
+    @config = Hypostasis::NamespaceConfig.new(self, { data_model: namespace_data_model.to_s })
   end
 
   def load_data_model
