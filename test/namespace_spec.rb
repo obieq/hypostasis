@@ -4,11 +4,11 @@ describe Hypostasis::Namespace do
   let(:subject) { Hypostasis::Namespace.create('demonstration') }
 
   before do
-    FDB.directory.remove_if_exists(database, 'demonstration')
+    subject
   end
 
   after do
-    FDB.directory.remove_if_exists(database, 'demonstration')
+    FDB.directory.remove_if_exists(database, %w{demonstration})
   end
 
   it { Hypostasis::Namespace.must_respond_to :create }
@@ -21,44 +21,25 @@ describe Hypostasis::Namespace do
 
   it { subject.must_respond_to :destroy }
 
-  describe '#create' do
-    let(:subject) { Hypostasis::Namespace.create('create_demo') }
-
-    before do
-      FDB.directory.remove_if_exists(database, 'create_demo')
-    end
-
-    after do
-      subject.destroy
-    end
-
-    it { subject.must_be_kind_of Hypostasis::Namespace }
-    it { subject; FDB.directory.exists?(database, 'create_demo').must_equal true }
-    it { subject; FDB.directory.open(database, 'create_demo').must_be_kind_of FDB::DirectorySubspace }
-  end
+  it { FDB.directory.exists?(database, %w{demonstration}).must_equal true }
+  it { FDB.directory.exists?(database, %w{demonstration config}).must_equal true }
+  it { FDB.directory.exists?(database, %w{demonstration indexes}).must_equal true }
+  it { FDB.directory.exists?(database, %w{demonstration data}).must_equal true }
 
   describe '#destroy' do
-    let(:subject) { Hypostasis::Namespace.create('destroy_demo') }
-
     before do
-      subject
+      subject = Hypostasis::Namespace.create('destroy_demo')
+      subject.destroy
     end
 
     after do
       FDB.directory.remove_if_exists(database, 'destroy_demo')
     end
 
-    it do
-      FDB.directory.exists?(database, 'destroy_demo').must_equal true
-      subject.destroy
-      FDB.directory.exists?(database, 'destroy_demo').must_equal false
-    end
-
-    it do
-      FDB.directory.open(database, 'destroy_demo').must_be_kind_of FDB::DirectorySubspace
-      subject.destroy
-      lambda { FDB.directory.open(database, 'destroy_demo') }.must_raise ArgumentError
-    end
+    it { FDB.directory.exists?(database, %w{destroy_demo}).must_equal false }
+    it { FDB.directory.exists?(database, %w{destroy_demo config}).must_equal false }
+    it { FDB.directory.exists?(database, %w{destroy_demo indexes}).must_equal false }
+    it { FDB.directory.exists?(database, %w{destroy_demo data}).must_equal false }
   end
 
   describe 'for a ColumnGroup namespace' do

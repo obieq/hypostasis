@@ -6,14 +6,17 @@ class Hypostasis::Namespace
   def initialize(namespace_name, namespace_data_model = :key_value)
     @name = namespace_name.to_s
     @config = { data_model: namespace_data_model.to_s }
-    directory = FDB.directory.open(database, @name)
+    directory = FDB.directory.open(database, [@name])
     raw_config_value = database.get(directory['hypostasis']['config'])
     raise Hypostasis::Errors::CanNotReadNamespaceConfig if raw_config_value.nil?
     retrieved_config = deserialize_messagepack(raw_config_value, Hash).symbolize_keys
     raise Hypostasis::Errors::UnknownNamespaceDataModel unless SUPPORTED_DATA_MODELS.include?(retrieved_config[:data_model].to_sym)
     raise Hypostasis::Errors::NamespaceDataModelMismatch unless retrieved_config[:data_model] == @config[:data_model]
-    @config.merge!(retrieved_config)
     @directory = directory
+    @config_directory = @directory.create_or_open(database, %w{config})
+    @indexes_directory = @directory.create_or_open(database, %w{indexes})
+    @data_directory = @directory.create_or_open(database, %w{data})
+    @config.merge!(retrieved_config)
     load_data_model
     self
   end
