@@ -42,14 +42,6 @@ class Hypostasis::Namespace
     Hypostasis::Namespace.new(name, merged_options[:data_model])
   end
 
-  #def self.open(name)
-  #  directory = FDB.directory.open(database, name.to_s)
-  #  raw_config_value = database.get(directory['hypostasis']['config'])
-  #  raise Hypostasis::Errors::CanNotReadNamespaceConfig if raw_config_value.nil?
-  #  current_config = deserialize_messagepack(raw_config_value, Hash).symbolize_keys
-  #  Hypostasis::Namespace.new(name, current_config[:data_model])
-  #end
-
   def self.serialize_messagepack(value)
     begin
       serialized_value = value

@@ -18,6 +18,7 @@ require 'hypostasis/errors'
 require 'hypostasis/tuple'
 require 'hypostasis/connection'
 require 'hypostasis/data_models'
+require 'hypostasis/namespace_config'
 require 'hypostasis/namespace'
 
 require 'hypostasis/column_group'
