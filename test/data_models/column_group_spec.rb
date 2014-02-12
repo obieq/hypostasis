@@ -3,10 +3,12 @@ require 'minitest_helper'
 describe Hypostasis::ColumnGroup do
   let(:dob) { Date.today.prev_year(21) }
   let(:subject) { SampleColumn.new(name: 'John', age: 21, dob: dob) }
+  #let(:directory) { FDB.directory.open(database, %w{sample_columns data}) }
+  let(:directory) { SampleColumn.namespace.data_directory }
 
   before do
-    FDB.directory.remove_if_exists(database, 'sample_columns')
-    FDB.directory.remove_if_exists(database, 'indexed_columns')
+    FDB.directory.remove_if_exists(database, %w{sample_columns})
+    FDB.directory.remove_if_exists(database, %w{indexed_columns})
     Hypostasis::Connection.create_namespace 'sample_columns', data_model: :column_group
     Hypostasis::Connection.create_namespace 'indexed_columns', data_model: :column_group
   end
@@ -38,10 +40,15 @@ describe Hypostasis::ColumnGroup do
     end
 
     it { subject.id.wont_be_nil }
-    it { database.get(column_path(subject)).must_equal 'true' }
-    it { database.get(field_path(subject, :name)).must_equal 'John'.to_msgpack }
-    it { database.get(field_path(subject, :age)).must_equal 21.to_msgpack }
-    it { database.get(field_path(subject, :dob)).must_equal Date.to_msgpack_type(dob).to_msgpack }
+
+    #it { database.get(column_path(subject)).must_equal 'true' }
+    #it { database.get(field_path(subject, :name)).must_equal 'John'.to_msgpack }
+    #it { database.get(field_path(subject, :age)).must_equal 21.to_msgpack }
+    #it { database.get(field_path(subject, :dob)).must_equal Date.to_msgpack_type(dob).to_msgpack }
+
+    it { database.get(directory[SampleColumn.to_s][subject.id][:name.to_s]).must_equal 'John'.to_msgpack }
+    it { database.get(directory[SampleColumn.to_s][subject.id][:age.to_s]).must_equal 21.to_msgpack }
+    it { database.get(directory[SampleColumn.to_s][subject.id][:dob.to_s]).must_equal Date.to_msgpack_type(dob).to_msgpack }
   end
 
   describe '#save' do
@@ -56,10 +63,15 @@ describe Hypostasis::ColumnGroup do
     end
 
     it { subject.id.wont_be_nil }
-    it { database.get(column_path(subject)).must_equal 'true' }
-    it { database.get(field_path(subject, :name)).must_equal 'John'.to_msgpack }
-    it { database.get(field_path(subject, :age)).must_equal 21.to_msgpack }
-    it { database.get(field_path(subject, :dob)).must_equal Date.to_msgpack_type(dob).to_msgpack }
+
+    #it { database.get(column_path(subject)).must_equal 'true' }
+    #it { database.get(field_path(subject, :name)).must_equal 'John'.to_msgpack }
+    #it { database.get(field_path(subject, :age)).must_equal 21.to_msgpack }
+    #it { database.get(field_path(subject, :dob)).must_equal Date.to_msgpack_type(dob).to_msgpack }
+
+    it { database.get(directory[SampleColumn.to_s][subject.id][:name.to_s]).must_equal 'John'.to_msgpack }
+    it { database.get(directory[SampleColumn.to_s][subject.id][:age.to_s]).must_equal 21.to_msgpack }
+    it { database.get(directory[SampleColumn.to_s][subject.id][:dob.to_s]).must_equal Date.to_msgpack_type(dob).to_msgpack }
   end
 
   describe '.find' do
