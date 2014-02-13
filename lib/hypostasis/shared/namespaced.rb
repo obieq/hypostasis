@@ -20,8 +20,6 @@ module Hypostasis::Shared
           :column_group
         elsif self.included_modules.include?(Hypostasis::Document)
           :document
-        else
-          :key_value
         end
       end
     end

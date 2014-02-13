@@ -7,12 +7,4 @@ module Hypostasis::DataModels::ColumnGroup
       yield tr
     end
   end
-
-  def for_column_group(column_group, id = nil)
-    directory[get_class_name(column_group)][get_object_id(column_group, id)]
-  end
-
-  def for_field(column_group, field_name)
-    for_column_group(column_group)[field_name.to_s]
-  end
 end

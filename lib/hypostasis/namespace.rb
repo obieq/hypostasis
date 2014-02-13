@@ -65,10 +65,6 @@ class Hypostasis::Namespace
 
 private
 
-  def key_path_for(key)
-    directory[key.to_s]
-  end
-
   def self.database
     Hypostasis::Connection.database
   end
@@ -96,8 +92,6 @@ private
         self.extend Hypostasis::DataModels::ColumnGroup
       when 'document'
         self.extend Hypostasis::DataModels::Document
-      else
-        raise Hypostasis::Errors::UnknownNamespaceDataModel, "#{data_model} unknown"
     end
   end
 end
