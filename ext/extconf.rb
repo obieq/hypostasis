@@ -8,7 +8,7 @@ end
 inst = Gem::DependencyInstaller.new
 begin
   if RUBY_PLATFORM == 'java'
-    inst.install 'msgpack-jruby', '~> 1.3.2'
+    inst.install 'msgpack-jruby', '~> 1.3'
   else
     inst.install 'msgpack', '~> 0.5.8'
   end
