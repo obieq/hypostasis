@@ -2,22 +2,19 @@ module Hypostasis::Shared
   module Indexes
     extend ActiveSupport::Concern
 
-
     included do
       cattr_accessor :indexed_fields
       self.class_eval <<-EOS
         @@indexed_fields = []
       EOS
     end
-    #included do
-    #  cattr_accessor_with_default :indexed_fields, []
-    #end
 
     private
 
     def indexed_fields_to_commit
       indexed_fields.collect do |field_name|
-        self.class.namespace.for_index(self, field_name, @fields[field_name])
+        field_value = self.class.namespace.serialize_messagepack(@fields[field_name])
+        self.class.namespace.indexes_directory[self.class.to_s][field_name.to_s][field_value][self.id].key
       end
     end
 

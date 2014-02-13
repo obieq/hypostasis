@@ -16,9 +16,5 @@ module Hypostasis::Document
   include Hypostasis::Document::Persistence
   include Hypostasis::Document::Findable
 
-  def to_bson
-    @fields.to_bson
-  end
-
   module ClassMethods; end
 end

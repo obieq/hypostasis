@@ -20,10 +20,6 @@ class Hypostasis::Namespace
     FDB.directory.remove(database, name)
   end
 
-  def to_s
-    name
-  end
-
   def self.create(name, options = {})
     merged_options = { data_model: :key_value }.merge(options).symbolize_keys
     raise Hypostasis::Errors::UnknownNamespaceDataModel unless SUPPORTED_DATA_MODELS.include?(merged_options[:data_model].to_sym)

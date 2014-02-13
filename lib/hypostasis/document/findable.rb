@@ -4,43 +4,50 @@ module Hypostasis::Document
 
     module ClassMethods
       def find(id)
-        fdb_key = nil
-        namespace.transact do |tr|
-          fdb_key = tr.get(namespace.for_document(self, id))
+        range = namespace.data_directory[self.to_s][id.to_s].range
+        document_keys = namespace.transact do |tr|
+          tr.get_range(range[0], range[1], {:streaming_mode => :want_all}).to_a
         end
-        raise Hypostasis::Errors::DocumentNotFound if fdb_key.nil?
-        reconstitute_document(fdb_key.value, id)
+        raise Hypostasis::Errors::DocumentNotFound if document_keys.empty?
+        reconstitute_document(document_keys)
       end
 
       def find_where(field_value_pairs)
         results = []
         namespace.transact do |tr|
           field_value_pairs.each do |field, value|
-            results << tr.get_range_start_with(namespace.for_index(self, field, value), {:streaming_mode => :want_all}).to_a
+            range = namespace.indexes_directory[self.to_s][field.to_s][namespace.serialize_messagepack(value)].range
+            results += tr.get_range(range[0], range[1]).to_a
           end
         end
-        results.flatten!
-        results.collect! {|result| Hypostasis::Tuple.unpack(result.key.split('\\').last).to_a.last }.compact!
+        results.collect! {|result| namespace.indexes_directory.unpack(result.key).last }.compact!
         results.select! {|e| results.count(e) == field_value_pairs.size}
         results.uniq!
-        find_many(results)
+        results.collect! {|result| find(result) }
       end
 
-      def find_many(ids)
-        results = []
-        namespace.transact do |tr|
-          ids.each {|id| results << [tr.get(namespace.for_document(self, id)), id]}
-        end
-        results.collect! do |result|
-          reconstitute_document(result[0], result[1])
-        end
-      end
+      #def find_many(ids)
+      #  results = []
+      #  namespace.transact do |tr|
+      #    ids.each do |id|
+      #      range = namespace.data_directory[self.to_s][id.to_s].range
+      #      results << tr.get_range(range[0], range[1], {:streaming_mode => :want_all}).to_a
+      #    end
+      #  end
+      #  results.collect {|result| reconstitute_document(result)}
+      #end
 
       private
 
-      def reconstitute_document(bson_value, id)
-        document = self.new(Hash.from_bson(StringIO.new(bson_value)))
-        document.set_id(id)
+      def reconstitute_document(keys)
+        reconstituted_attributes = {}
+        keys.each do |key|
+          key_name = namespace.data_directory.unpack(key.key)[2]
+          key_value = namespace.deserialize_messagepack(key.value, registered_fields[key_name.to_sym][:type])
+          reconstituted_attributes.merge!({key_name => key_value})
+        end
+        document = self.new(reconstituted_attributes)
+        document.set_id(namespace.data_directory.unpack(keys.first.key)[1])
         document
       end
     end

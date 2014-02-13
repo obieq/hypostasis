@@ -25,7 +25,5 @@ module Hypostasis::Shared
     @id ||= id.to_s
   end
 
-  module ClassMethods
-    include Hypostasis::DataModels::Utilities
-  end
+  module ClassMethods; end
 end

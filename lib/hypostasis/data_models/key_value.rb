@@ -1,8 +1,6 @@
 require 'date'
 
 module Hypostasis::DataModels::KeyValue
-  include Hypostasis::DataModels::Utilities
-
   def set(key, value)
     database.transact do |tr|
       tr[data_directory[key.to_s]] = serialize_messagepack(value)
