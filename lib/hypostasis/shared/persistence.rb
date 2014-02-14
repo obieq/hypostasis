@@ -5,15 +5,8 @@ module Hypostasis::Shared
     def save
       generate_id
       self.class.namespace.transact do |tr|
-        @fields.each do |field_name, value|
-          field_key = self.class.namespace.data_directory[self.class.to_s][self.id][field_name.to_s]
-          field_value = self.class.namespace.serialize_messagepack(value)
-          tr.set(field_key, field_value)
-        end
-
-        indexed_fields_to_commit.each do |key|
-          tr.set(key, self.class.namespace.data_directory[self.class.to_s][self.id].to_s)
-        end
+        @fields.each {|field_name, value| tr.set(field_key(field_name), field_value(value))}
+        indexed_fields_to_commit.each {|key| tr.set(key, index_value)}
       end
       self
     end
@@ -24,6 +17,20 @@ module Hypostasis::Shared
         tr.clear_range(range[0], range[1])
         indexed_fields_to_commit.each {|key| tr.clear(key)}
       end
+    end
+
+    private
+
+    def field_key(field_name)
+      self.class.namespace.data_directory[self.class.to_s][self.id][field_name.to_s]
+    end
+
+    def field_value(raw_value)
+      self.class.namespace.serialize_messagepack(raw_value)
+    end
+
+    def index_value
+      self.class.namespace.data_directory[self.class.to_s][self.id]
     end
 
     module ClassMethods
