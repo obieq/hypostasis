@@ -27,17 +27,24 @@ module Hypostasis::Shared
         results = []
         namespace.transact do |tr|
           field_value_pairs.each do |field, value|
-            range = namespace.indexes_directory[self.to_s][field.to_s][namespace.serialize_messagepack(value)].range
+            range = field_index_range(field, value)
             results += tr.get_range(range[0], range[1]).to_a
           end
         end
-        results.collect! {|result| namespace.indexes_directory.unpack(result.key).last }.compact!
-        results.select! {|e| results.count(e) == field_value_pairs.size}
-        results.uniq!
-        find_many(results)
+        find_many(process_index_hits(results, field_value_pairs.size))
       end
 
       private
+
+      def field_index_range(field, value)
+        namespace.indexes_directory[self.to_s][field.to_s][namespace.serialize_messagepack(value)].range
+      end
+
+      def process_index_hits(index_hits, expected_hits)
+        index_hits.collect! {|hit| namespace.indexes_directory.unpack(hit.key).last }.compact!
+        index_hits.select! {|e| index_hits.count(e) == expected_hits}
+        index_hits.uniq
+      end
 
       def reconstitute_from(keys)
         reconstituted_attributes = {}
