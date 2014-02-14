@@ -1,6 +1,7 @@
 require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
 require 'hypostasis/shared/indexes'
+require 'hypostasis/shared/persistence'
 require 'hypostasis/shared/findable'
 require 'hypostasis/shared/belongs_to'
 require 'hypostasis/shared/has_one'

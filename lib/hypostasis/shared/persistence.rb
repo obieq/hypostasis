@@ -1,4 +1,4 @@
-module Hypostasis::ColumnGroup
+module Hypostasis::Shared
   module Persistence
     extend ActiveSupport::Concern
 
@@ -12,7 +12,7 @@ module Hypostasis::ColumnGroup
         end
 
         indexed_fields_to_commit.each do |key|
-          tr.set(key, self.class.namespace.data_directory[self.class.to_s][self.id].key)
+          tr.set(key, self.class.namespace.data_directory[self.class.to_s][self.id].to_s)
         end
       end
       self
