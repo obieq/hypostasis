@@ -30,7 +30,7 @@ module Hypostasis::Shared
     end
 
     def index_value
-      self.class.namespace.data_directory[self.class.to_s][self.id]
+      self.class.namespace.data_directory[self.class.to_s][self.id].to_s
     end
 
     module ClassMethods

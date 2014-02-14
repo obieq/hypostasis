@@ -41,14 +41,18 @@ module Hypostasis::Shared
 
       def reconstitute_from(keys)
         reconstituted_attributes = {}
-        keys.each do |key|
-          key_name = namespace.data_directory.unpack(key.key)[2]
-          key_value = namespace.deserialize_messagepack(key.value, registered_fields[key_name.to_sym][:type])
-          reconstituted_attributes.merge!({key_name => key_value})
-        end
+        keys.each {|key| reconstituted_attributes.merge!({get_key_name(key) => get_key_value(key)})}
         document = self.new(reconstituted_attributes)
         document.set_id(namespace.data_directory.unpack(keys.first.key)[1])
         document
+      end
+
+      def get_key_name(key)
+        namespace.data_directory.unpack(key.key)[2]
+      end
+
+      def get_key_value(key)
+        namespace.deserialize_messagepack(key.value, registered_fields[get_key_name(key).to_sym][:type])
       end
     end
   end
