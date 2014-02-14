@@ -1,4 +1,4 @@
-module Hypostasis::ColumnGroup
+module Hypostasis::Shared
   module Findable
     extend ActiveSupport::Concern
 
@@ -9,7 +9,18 @@ module Hypostasis::ColumnGroup
           tr.get_range(range[0], range[1], {:streaming_mode => :want_all}).to_a
         end
         raise Hypostasis::Errors::ColumnGroupNotFound if document_keys.empty?
-        reconstitute_column_group(document_keys)
+        reconstitute_from(document_keys)
+      end
+
+      def find_many(ids)
+        results = []
+        namespace.transact do |tr|
+          ids.each do |id|
+            range = namespace.data_directory[self.to_s][id.to_s].range
+            results << tr.get_range(range[0], range[1])
+          end
+        end
+        results.collect! {|result| reconstitute_from(result)}
       end
 
       def find_where(field_value_pairs)
@@ -23,12 +34,12 @@ module Hypostasis::ColumnGroup
         results.collect! {|result| namespace.indexes_directory.unpack(result.key).last }.compact!
         results.select! {|e| results.count(e) == field_value_pairs.size}
         results.uniq!
-        results.collect! {|result| find(result) }
+        find_many(results)
       end
 
       private
 
-      def reconstitute_column_group(keys, id = nil)
+      def reconstitute_from(keys)
         reconstituted_attributes = {}
         keys.each do |key|
           key_name = namespace.data_directory.unpack(key.key)[2]
