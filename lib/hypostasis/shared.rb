@@ -1,6 +1,8 @@
 require 'hypostasis/shared/namespaced'
 require 'hypostasis/shared/fields'
 require 'hypostasis/shared/indexes'
+require 'hypostasis/shared/persistence'
+require 'hypostasis/shared/findable'
 require 'hypostasis/shared/belongs_to'
 require 'hypostasis/shared/has_one'
 require 'hypostasis/shared/has_many'
@@ -11,7 +13,6 @@ module Hypostasis::Shared
   attr_reader :id
 
   def initialize(*attributes)
-    self.class.class_variable_get(:@@namespace).open
     @fields = {}
     self.class.registered_fields.each {|name, options| @fields[name] = nil}
     attributes.each {|hsh| hsh.each {|name, value| @fields[name.to_sym] = value}}
@@ -26,7 +27,5 @@ module Hypostasis::Shared
     @id ||= id.to_s
   end
 
-  module ClassMethods
-    include Hypostasis::DataModels::Utilities
-  end
+  module ClassMethods; end
 end

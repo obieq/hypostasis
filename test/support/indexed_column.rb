@@ -1,3 +1,6 @@
+FDB.directory.remove_if_exists(FDB.open, 'indexed_columns')
+Hypostasis::Connection.create_namespace 'indexed_columns', data_model: :column_group
+
 class IndexedColumn
   include Hypostasis::ColumnGroup
 

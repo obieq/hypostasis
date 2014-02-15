@@ -1,55 +1,31 @@
 class Hypostasis::Namespace
-  attr_reader :name
+  attr_reader :name, :config, :directory, :data_directory, :indexes_directory
 
-  def initialize(name, data_model = :key_value)
-    @name = name.to_s
-    @config = {
-        data_model: data_model.to_s
-    }
+  SUPPORTED_DATA_MODELS = [:column_group, :key_value, :document]
+
+  def initialize(namespace_name, namespace_data_model = :key_value)
+    @name = namespace_name.to_s
+    setup_directories
+    setup_configuration(namespace_data_model)
     load_data_model
+    self
   end
+  self.singleton_class.send(:alias_method, :open, :new)
 
   def data_model
     @config[:data_model]
   end
 
-  #def config
-  #  @config = (deserialize_messagepack database.get(name), Hash).symbolize_keys
-  #end
-
-  def open
-    raise Hypostasis::Errors::NonExistentNamespace if database[name].nil?
-    current_config = (deserialize_messagepack database.get(name), Hash).symbolize_keys
-    raise Hypostasis::Errors::NamespaceDataModelMismatch if current_config[:data_model] != data_model
-    self
-  end
-
   def destroy
-    database.clear_range_start_with(name)
-    true
-  end
-
-  def to_s
-    name
+    FDB.directory.remove(database, name)
   end
 
   def self.create(name, options = {})
-    raise Hypostasis::Errors::NamespaceAlreadyCreated unless database[name].nil?
-    merged_options = { data_model: :key_value }.merge(options)
-
-    database.transact do |tr|
-      tr.set(name.to_s, serialize_messagepack(merged_options))
-    end
-
+    merged_options = { data_model: :key_value }.merge(options).symbolize_keys
+    raise Hypostasis::Errors::UnknownNamespaceDataModel unless SUPPORTED_DATA_MODELS.include?(merged_options[:data_model].to_sym)
+    directory = FDB.directory.create(database, name.to_s)
+    database.set(directory['hypostasis']['config'], serialize_messagepack(merged_options))
     Hypostasis::Namespace.new(name, merged_options[:data_model])
-  end
-
-  def self.open(name)
-    raise Hypostasis::Errors::NonExistentNamespace if database[name].nil?
-    config_value = database.get(name)
-    raise Hypostasis::Errors::CanNotReadNamespaceConfig if config_value.nil?
-    current_config = (deserialize_messagepack config_value, Hash).symbolize_keys
-    Hypostasis::Namespace.new(name, current_config[:data_model])
   end
 
   def self.serialize_messagepack(value)
@@ -93,6 +69,17 @@ private
     Hypostasis::Namespace.database
   end
 
+  def setup_directories
+    @directory = FDB.directory.open(database, [@name])
+    @config_directory = @directory.create_or_open(database, %w{config})
+    @indexes_directory = @directory.create_or_open(database, %w{indexes})
+    @data_directory = @directory.create_or_open(database, %w{data})
+  end
+
+  def setup_configuration(namespace_data_model)
+    @config = Hypostasis::NamespaceConfig.new(self, { data_model: namespace_data_model.to_s })
+  end
+
   def load_data_model
     case data_model
       when 'key_value'
@@ -101,8 +88,6 @@ private
         self.extend Hypostasis::DataModels::ColumnGroup
       when 'document'
         self.extend Hypostasis::DataModels::Document
-      else
-        raise Hypostasis::Errors::UnknownNamespaceDataModel, "#{data_model} unknown"
     end
   end
 end

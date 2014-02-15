@@ -1,9 +1,13 @@
 require 'minitest_helper'
 
 describe Hypostasis::Document do
-  let(:subject) { SampleDocument.new(name: 'John', age: 21, dob: Date.today.prev_year(21)) }
+  let(:dob) { Date.today.prev_year(21) }
+  let(:subject) { SampleDocument.new(name: 'John', age: 21, dob: dob) }
+  let(:directory) { SampleDocument.namespace.data_directory }
 
   before do
+    FDB.directory.remove_if_exists(database, 'sample_documents')
+    FDB.directory.remove_if_exists(database, 'indexed_documents')
     Hypostasis::Connection.create_namespace 'sample_documents', data_model: :document
     Hypostasis::Connection.create_namespace 'indexed_documents', data_model: :document
   end
@@ -23,19 +27,21 @@ describe Hypostasis::Document do
 
   it { subject.name.must_equal 'John' }
   it { subject.age.must_equal 21 }
-  it { subject.dob.must_equal Date.today.prev_year(21) }
+  it { subject.dob.must_equal dob }
 
   it { subject.must_respond_to :save }
 
   describe '.create' do
-    let(:subject) { SampleDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21)) }
+    let(:subject) { SampleDocument.create(name: 'John', age: 21, dob: dob) }
 
     after do
       subject.destroy
     end
 
     it { subject.id.wont_be_nil }
-    it { database.get(document_path(subject)).must_equal subject.to_bson }
+    it { database.get(directory[SampleDocument.to_s][subject.id][:name.to_s]).must_equal 'John'.to_msgpack }
+    it { database.get(directory[SampleDocument.to_s][subject.id][:age.to_s]).must_equal 21.to_msgpack }
+    it { database.get(directory[SampleDocument.to_s][subject.id][:dob.to_s]).must_equal dob.to_s.to_msgpack }
   end
 
   describe '.save' do
@@ -48,7 +54,9 @@ describe Hypostasis::Document do
     end
 
     it { subject.id.wont_be_nil }
-    it { database.get(document_path(subject)).must_equal subject.to_bson }
+    it { database.get(directory[SampleDocument.to_s][subject.id][:name.to_s]).must_equal 'John'.to_msgpack }
+    it { database.get(directory[SampleDocument.to_s][subject.id][:age.to_s]).must_equal 21.to_msgpack }
+    it { database.get(directory[SampleDocument.to_s][subject.id][:dob.to_s]).must_equal dob.to_s.to_msgpack }
   end
 
   describe '.find' do
@@ -69,10 +77,15 @@ describe Hypostasis::Document do
 
   describe '.find_where' do
     before do
-      IndexedDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
-      IndexedDocument.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
-      IndexedDocument.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
-      IndexedDocument.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
+      @documents = []
+      @documents << IndexedDocument.create(name: 'John', age: 21, dob: Date.today.prev_year(21))
+      @documents << IndexedDocument.create(name: 'Jane', age: 21, dob: Date.today.prev_year(21))
+      @documents << IndexedDocument.create(name: 'John', age: 23, dob: Date.today.prev_year(23))
+      @documents << IndexedDocument.create(name: 'Tom', age: 20, dob: Date.today.prev_year(20))
+    end
+
+    after do
+      @documents.each {|doc| doc.destroy}
     end
 
     it { IndexedDocument.find_where(name: 'John').size.must_equal 2 }

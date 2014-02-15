@@ -23,6 +23,7 @@ class Hypostasis::Connection
   end
 
   def self.destroy_namespace(name)
+    FDB.directory.remove_if_exists(database, name.to_s)
     database.clear_range_start_with(name.to_s)
     true
   end

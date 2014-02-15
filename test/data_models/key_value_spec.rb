@@ -1,15 +1,16 @@
 require 'minitest_helper'
 
 describe Hypostasis::DataModels::KeyValue do
+  let(:subject) { Hypostasis::Namespace.create('keyvalue_space', { data_model: :key_value }) }
+  let(:directory) { FDB.directory.open(database, %w{keyvalue_space data}) }
+
   before do
     subject
   end
 
   after do
-    subject.destroy
+    FDB.directory.remove_if_exists(database, %w{keyvalue_space})
   end
-
-  let(:subject) { Hypostasis::Namespace.create('keyvalue_space', { data_model: :key_value }) }
 
   it { subject.must_respond_to :get }
   it { subject.must_respond_to :set }
@@ -19,7 +20,7 @@ describe Hypostasis::DataModels::KeyValue do
       subject.set('fixnum', 5)
     end
 
-    it { database.get('keyvalue_space\\fixnum').must_equal 5.to_msgpack }
+    it { database.get(directory['fixnum']).must_equal 5.to_msgpack }
   end
 
   describe '#get' do
@@ -105,7 +106,7 @@ describe Hypostasis::DataModels::KeyValue do
     describe 'for unknown type' do
       before do
         class Unknown; end
-        database.set('keyvalue_space\\unknown', '\xunknown')
+        database.set(directory['unknown'], '\xunknown')
       end
 
       it { lambda { subject.set('unknown', Unknown.new) }.must_raise Hypostasis::Errors::UnknownValueType }
